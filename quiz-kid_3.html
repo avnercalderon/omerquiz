@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" style="height:100%">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>חידון-על 🎯</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12152B; --bg2:#1A1E3D; --card:#22264D; --line:#33386B;
+    --text:#F2F3FF; --muted:#9CA3D4; --gold:#FFC53D;
+    --c-signs:#E5484D; --c-flags:#3E63DD; --c-caps:#30A46C;
+    --c-places:#F76B15; --c-cars:#8E4EC6; --c-syms:#12A594; --c-acro:#D6409F; --c-eng:#00A2C7;
+    --c-foot:#7CB342; --c-bball:#FF7043; --c-ussp:#5C6BC0;
+    --ok:#46C97B; --bad:#F26D78;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html{height:100%}
+  body{
+    margin:0; min-height:100%; background:var(--bg); color:var(--text);
+    font-family:'Heebo',sans-serif; -webkit-overflow-scrolling:touch;
+    background-image:radial-gradient(circle at 15% 10%, #232866 0%, transparent 40%),
+                     radial-gradient(circle at 85% 90%, #1c3559 0%, transparent 45%);
+    background-attachment:fixed; transform:translateZ(0);
+  }
+  .wrap{max-width:820px; margin:0 auto; padding:20px 16px 60px}
+  h1,h2,.display{font-family:'Secular One',sans-serif; font-weight:400; letter-spacing:.5px}
+
+  /* ---------- HOME ---------- */
+  .hero{text-align:center; padding:18px 0 8px}
+  .hero h1{font-size:44px; margin:0}
+  .hero .sub{color:var(--muted); margin-top:6px; font-size:17px}
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:22px}
+  .qcard{
+    border:none; border-radius:22px; padding:20px 14px 16px; cursor:pointer;
+    background:var(--card); color:var(--text); text-align:center;
+    border-bottom:6px solid var(--qc,#555); box-shadow:0 8px 24px rgba(0,0,0,.35);
+    transition:transform .12s ease, box-shadow .12s ease; min-height:120px;
+    font-family:'Heebo',sans-serif;
+  }
+  .qcard:active{transform:scale(.96)}
+  @media(hover:hover){ .qcard:hover{transform:translateY(-4px); box-shadow:0 14px 30px rgba(0,0,0,.45)} }
+  .qcard .ico{font-size:40px; line-height:1}
+  .qcard .nm{font-family:'Secular One'; font-size:20px; margin-top:8px}
+  .qcard .best{font-size:13px; color:var(--muted); margin-top:4px}
+  .qcard .best b{color:var(--gold)}
+
+  /* ---------- MODE MODAL ---------- */
+  .overlay{position:fixed; inset:0; background:rgba(8,10,25,.75); backdrop-filter:blur(4px);
+    display:flex; align-items:center; justify-content:center; z-index:50; padding:20px}
+  .modal{background:var(--bg2); border:1px solid var(--line); border-radius:24px; padding:26px 22px;
+    width:100%; max-width:420px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .modal .ico{font-size:52px}
+  .modal h2{font-size:28px; margin:8px 0 4px}
+  .modal p{color:var(--muted); margin:0 0 18px}
+  .modebtn{display:flex; align-items:center; gap:14px; width:100%; border:2px solid var(--line);
+    background:var(--card); color:var(--text); border-radius:16px; padding:14px 16px; margin-top:10px;
+    cursor:pointer; font-family:'Heebo'; font-size:17px; text-align:right; min-height:44px;
+    transition:border-color .15s, transform .1s}
+  .modebtn:active{transform:scale(.97)}
+  .modebtn .m-ico{font-size:28px}
+  .modebtn small{display:block; color:var(--muted); font-size:13px; margin-top:2px}
+  .modebtn:hover{border-color:var(--gold)}
+  .closex{margin-top:16px; background:none; border:none; color:var(--muted); font-size:15px;
+    cursor:pointer; font-family:'Heebo'; min-height:44px}
+
+  /* ---------- LOADING ---------- */
+  .loadbox{text-align:center; padding:80px 20px; color:var(--muted); font-size:18px}
+  .spinner{width:44px; height:44px; margin:0 auto 18px; border-radius:50%;
+    border:5px solid var(--card); border-top-color:var(--gold); animation:spin .9s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ---------- QUIZ ---------- */
+  .topbar{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px}
+  .pill{background:var(--card); border:1px solid var(--line); border-radius:999px;
+    padding:8px 14px; font-size:15px; display:flex; align-items:center; gap:6px; min-height:44px}
+  .pill b{color:var(--gold)}
+  .exitbtn{background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:999px;
+    width:44px; height:44px; font-size:18px; cursor:pointer}
+  .streak{color:#FF8A3D; font-weight:700}
+
+  .progress{height:8px; background:var(--card); border-radius:99px; overflow:hidden; margin-bottom:16px}
+  .progress i{display:block; height:100%; width:0%; background:var(--qc,var(--gold)); border-radius:99px;
+    transition:width .3s ease}
+
+  .stage{
+    background:var(--bg2); border:1px solid var(--line); border-radius:26px;
+    padding:22px 16px; text-align:center; position:relative; overflow:hidden;
+    box-shadow:inset 0 0 60px rgba(0,0,0,.25);
+  }
+  .stage::before{content:''; position:absolute; inset:-40%;
+    background:radial-gradient(circle, color-mix(in srgb, var(--qc) 14%, transparent) 0%, transparent 60%);
+    pointer-events:none}
+  .visual{min-height:160px; display:flex; align-items:center; justify-content:center; margin-bottom:8px}
+  .visual img.sign{width:160px; height:160px; object-fit:contain;
+    filter:drop-shadow(0 8px 16px rgba(0,0,0,.4))}
+  .visual img.flag{width:220px; max-width:70vw; border-radius:10px; box-shadow:0 10px 24px rgba(0,0,0,.5)}
+  .visual img.logo{width:150px; height:150px; object-fit:contain; background:#fff; border-radius:20px;
+    padding:14px; box-shadow:0 10px 24px rgba(0,0,0,.5)}
+  .visual img.photo{width:280px; max-width:78vw; height:190px; object-fit:cover; border-radius:14px;
+    box-shadow:0 12px 28px rgba(0,0,0,.55)}
+  .visual .glyph{font-size:92px; font-weight:900; line-height:1; text-shadow:0 8px 24px rgba(0,0,0,.5)}
+  .visual .glyph.acro{font-size:56px; font-family:'Secular One'}
+  .visual .glyph.eng{font-size:44px; font-family:'Heebo'; font-weight:900; direction:ltr; letter-spacing:1.5px}
+  .visual .bigmoji{font-size:88px; line-height:1}
+  .qtext{font-family:'Secular One'; font-size:24px; margin:6px 4px 2px; position:relative}
+
+  .timer{position:absolute; top:12px; left:12px; width:52px; height:52px; z-index:5}
+  .timer svg{width:52px; height:52px; transform:rotate(-90deg)}
+  .timer .tnum{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-weight:900; font-size:17px}
+  .timer.hurry .tnum{color:var(--bad); animation:pulse .5s infinite alternate}
+  @keyframes pulse{to{transform:scale(1.25)}}
+
+  .answers{display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:18px}
+  .ans{
+    border:2px solid var(--line); background:var(--card); color:var(--text);
+    border-radius:16px; padding:16px 12px; font-family:'Heebo'; font-size:17px; font-weight:500;
+    cursor:pointer; min-height:58px; transition:transform .1s, border-color .15s, background .15s;
+  }
+  .ans:active{transform:scale(.96)}
+  @media(hover:hover){ .ans:hover{border-color:var(--qc)} }
+  .ans.correct{background:#1B4332; border-color:var(--ok); color:#C7F5D9}
+  .ans.wrong{background:#4A1F27; border-color:var(--bad); color:#FFD3D8}
+  .ans.dim{opacity:.45}
+  .ans:disabled{cursor:default}
+  .feedback{min-height:30px; margin-top:14px; font-size:19px; font-weight:700}
+  .feedback.ok{color:var(--ok)} .feedback.bad{color:var(--bad)}
+
+  /* ---------- RESULTS ---------- */
+  .results{text-align:center; padding:30px 10px}
+  .results .bigmoji{font-size:80px}
+  .results h2{font-size:34px; margin:10px 0 2px}
+  .results .scoreline{font-size:22px; color:var(--muted)}
+  .results .scoreline b{color:var(--gold); font-size:34px; font-family:'Secular One'}
+  .newbest{display:inline-block; margin-top:10px; background:var(--gold); color:#3a2b00;
+    border-radius:999px; padding:6px 16px; font-weight:900; animation:pop .4s ease}
+  @keyframes pop{from{transform:scale(0)} to{transform:scale(1)}}
+  .rbtns{display:flex; gap:12px; justify-content:center; margin-top:26px; flex-wrap:wrap}
+  .btn{border:none; border-radius:16px; padding:14px 26px; font-family:'Heebo'; font-size:18px;
+    font-weight:700; cursor:pointer; min-height:48px}
+  .btn.primary{background:var(--gold); color:#3a2b00}
+  .btn.ghost{background:var(--card); color:var(--text); border:2px solid var(--line)}
+  .btn:active{transform:scale(.96)}
+
+  .credit{text-align:center; color:var(--muted); font-size:12px; margin-top:26px; opacity:.7}
+  .hidden{display:none !important}
+
+  .confetti{position:fixed; top:-20px; width:10px; height:14px; z-index:99; pointer-events:none;
+    animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg); opacity:.6}}
+
+  @media(prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important} }
+
+  /* ---------- MOBILE ---------- */
+  @media(max-width:600px){
+    .wrap{padding:14px 12px 40px}
+    .hero h1{font-size:34px}
+    .grid{gap:10px}
+    .qcard{padding:16px 10px 12px; border-radius:18px}
+    .qcard .ico{font-size:32px} .qcard .nm{font-size:17px}
+    .visual img.sign{width:130px; height:130px}
+    .visual img.flag{width:185px}
+    .visual img.logo{width:120px; height:120px}
+    .visual img.photo{width:100%; height:170px}
+    .visual .glyph{font-size:74px} .visual .glyph.acro{font-size:44px}
+    .visual .glyph.eng{font-size:34px}
+    .visual .bigmoji{font-size:70px}
+    .qtext{font-size:20px}
+    .answers{grid-template-columns:1fr; gap:10px}
+    .ans{width:100%; padding:14px 12px; font-size:16px}
+    .pill{font-size:13px; padding:6px 11px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HOME -->
+  <div id="home">
+    <div class="hero">
+      <h1>🎯 חידון־על</h1>
+      <div class="sub">בחר קטגוריה והתחל לשחק</div>
+    </div>
+    <div class="grid" id="quizGrid"></div>
+    <div class="credit">תמונות: לוח התמרורים – ויקישיתוף · דגלים – flagcdn · מקומות – ויקיפדיה</div>
+  </div>
+
+  <!-- LOADING -->
+  <div id="loading" class="hidden">
+    <div class="loadbox"><div class="spinner"></div>טוען שאלות...</div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="hidden">
+    <div class="topbar">
+      <button class="exitbtn" onclick="exitQuiz()" aria-label="יציאה">✕</button>
+      <div class="pill">שאלה <b id="qNum">1</b>/<span id="qTot">10</span></div>
+      <div class="pill">🏆 <b id="score">0</b></div>
+      <div class="pill streak" id="streakPill">🔥 0</div>
+    </div>
+    <div class="progress"><i id="progBar"></i></div>
+    <div class="stage" id="stage">
+      <div class="timer hidden" id="timerBox">
+        <svg viewBox="0 0 52 52">
+          <circle cx="26" cy="26" r="22" fill="none" stroke="#33386B" stroke-width="5"/>
+          <circle id="timerRing" cx="26" cy="26" r="22" fill="none" stroke="#FFC53D" stroke-width="5"
+                  stroke-linecap="round" stroke-dasharray="138.2" stroke-dashoffset="0"/>
+        </svg>
+        <div class="tnum" id="timerNum">15</div>
+      </div>
+      <div class="visual" id="visual"></div>
+      <div class="qtext" id="qText"></div>
+      <div class="answers" id="answers"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="resultsScr" class="hidden">
+    <div class="results">
+      <div class="bigmoji" id="resEmoji">🎉</div>
+      <h2 id="resTitle"></h2>
+      <div class="scoreline"><b id="resScore">0</b> נקודות · <span id="resRight"></span></div>
+      <div id="resBest"></div>
+      <div class="rbtns">
+        <button class="btn primary" onclick="startQuiz(state.quizKey, state.mode)">🔄 עוד סיבוב</button>
+        <button class="btn ghost" onclick="goHome()">🏠 לתפריט</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODE MODAL -->
+<div class="overlay hidden" id="modeOverlay">
+  <div class="modal">
+    <div class="ico" id="modalIco">🎯</div>
+    <h2 id="modalTitle"></h2>
+    <p>איך בא לך לשחק?</p>
+    <button class="modebtn" onclick="pickMode('relax')">
+      <span class="m-ico">🧘</span>
+      <span>מצב רגוע<small>בלי לחץ, בקצב שלך</small></span>
+    </button>
+    <button class="modebtn" onclick="pickMode('timer')">
+      <span class="m-ico">⏱️</span>
+      <span>נגד השעון<small>15 שניות לשאלה + בונוס מהירות</small></span>
+    </button>
+    <button class="closex" onclick="closeModal()">ביטול</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   תמרורים — תמונות רשמיות מוויקישיתוף לפי מספר התמרור בלות"ם
+   (לוח התמרורים הרשמי, משרד התחבורה, נוסח ספטמבר 2022)
+   ============================================================ */
+const signURL = n => `https://commons.wikimedia.org/wiki/Special:FilePath/Israel_road_sign_${n}.svg?width=320`;
+const SIGN_ITEMS = [
+  // אזהרה והתראה (1xx)
+  [101,'כביש משובש בדרך שלפניך'],
+  [102,'עקומה חדה ימינה'],
+  [106,'דרך מפותלת'],
+  [109,'הכביש הולך וצר'],
+  [114,'צומת הצטלבות לפניך'],
+  [122,'רמזור בדרך שלפניך'],
+  [129,'מפגש מסילת ברזל'],
+  [136,'הולכי רגל בקרבת מקום'],
+  [139,'תמרור "עצור" בהמשך הדרך'],
+  [140,'ירידה תלולה'],
+  [141,'סכנת החלקה'],
+  [144,'פסי האטה בדרך שלפניך'],
+  [145,'תנועה דו־סטרית'],
+  [146,'בעלי חיים בדרך שלפניך'],
+  [103,'עקומה חדה שמאלה'],
+  [104,'עקומה ימינה ואחר כך שמאלה'],
+  [110,'הכביש הולך וצר מצד ימין'],
+  [113,'מכשול גובה — מעבר נמוך'],
+  [115,'צומת קמץ ימינה'],
+  [117,'צומת קמץ (T)'],
+  [123,'התמזגות עם דרך צדדית מימין'],
+  [133,'מקום מפגש מסילת ברזל — מסילה אחת'],
+  [137,'תנועת אופניים בקרבת מקום'],
+  [150,'מקום מסוכן'],
+  [151,'תאונה בדרך שלפניך'],
+  [152,'רוח צד'],
+  [153,'מים עמוקים'],
+  [128,'רכבת מקומית חוצה'],
+  [138,'מנהרה בדרך שלפניך'],
+  [142,'אבנים מידרדרות'],
+  [147,'רכב עבודה או טרקטור חוצה'],
+  // הוריה (2xx)
+  [203,'סע ישר'],
+  [204,'סע ימינה'],
+  [201,'סע ישר או ימינה'],
+  [205,'סע שמאלה'],
+  [211,'סע בפניית פרסה'],
+  [208,'סע ימינה או שמאלה'],
+  [216,'כניסה לדרך מהירה'],
+  [219,'דרך לרכב מנועי בלבד'],
+  [217,'קצה הדרך המהירה'],
+  [220,'רחוב משולב'],
+  [222,'אזור מיתון תנועה'],
+  [228,'שביל משותף להולכי רגל ולאופניים'],
+  [230,'כביש או נתיב אגרה'],
+  [226,'שביל להולכי רגל בלבד'],
+  [227,'שביל לתנועת אופניים'],
+  // זכות קדימה (3xx)
+  [301,'תן זכות קדימה'],
+  [302,'עצור! ותן זכות קדימה'],
+  [303,'מעגל תנועה — תן זכות קדימה ועבור מימין'],
+  [304,'עצור! (תמרור נייד)'],
+  [306,'תן זכות קדימה להולכי הרגל החוצים'],
+  [307,'תן זכות קדימה בקטע דרך צרה'],
+  [308,'לך זכות קדימה בקטע דרך צרה'],
+  [309,'לך זכות קדימה בדרך'],
+  [310,'קצה הדרך שבה יש לך זכות קדימה'],
+  // איסורים והגבלות (4xx)
+  [401,'כביש סגור בשני הכיוונים בפני כל רכב'],
+  [402,'אסורה הכניסה לכל רכב'],
+  [403,'מחסום — הדרך חסומה'],
+  [405,'אסורה הכניסה לרכב מנועי'],
+  [406,'אסורה כניסה לרכב מסחרי כבד מהרשום'],
+  [407,'אסורה כניסה לרכב המוביל חומר מסוכן'],
+  [408,'אסורה כניסה לרכב מנועי, למעט דו־גלגלי'],
+  [410,'אסורה כניסה לרכב עבודה ולטרקטור'],
+  [411,'אסורה כניסה לבעלי חיים'],
+  [409,'אסורה הכניסה לאופנוע'],
+  [412,'אסורה הכניסה לאופניים'],
+  [413,'אסורה הכניסה להולכי רגל'],
+  [414,'אסורה כניסה להולכי רגל, טרקטור, בע״ח ואופניים'],
+  [415,'אסורה כניסה לרכב כבד מהמשקל הרשום'],
+  [416,'אסורה כניסה לרכב שגובהו מעל הרשום'],
+  [417,'אסורה כניסה לרכב רחב מהרשום'],
+  [418,'אזור אסור ללימוד נהיגה'],
+  [420,'אסורה עקיפה'],
+  [421,'קצה קטע איסור העקיפה'],
+  [424,'אזור דרכים עירוניות'],
+  [426,'הגבלת מהירות'],
+  [427,'קצה קטע המהירות המיוחדת'],
+  [428,'אסורה פנייה ימינה'],
+  [429,'אסורה פנייה שמאלה'],
+  [430,'אסורה פניית פרסה לימין'],
+  [432,'אסורה חניית רכב'],
+  [433,'אסורה עצירה וחניה'],
+  [437,'חניה בלעדית לרכב נכה'],
+  [438,'עצור! ביקורת מכס'],
+  [501,'נתיב לתחבורה ציבורית'],
+  [505,'תחנת אוטובוסים'],
+  [507,'תחנת מוניות'],
+  [510,'תחנת הסעה לחיילים'],
+  // מודיעין (6xx)
+  [618,'כביש חד־סטרי'],
+  [619,'מספר הנתיבים הולך וגדל'],
+  [621,'מספר הנתיבים הולך וקטן'],
+  [623,'כביש ללא מוצא'],
+  [624,'כביש ללא מוצא מימין'],
+  [626,'חניה מותרת'],
+  [635,'סכנת שריפות'],
+  [637,'מפרץ לעצירה במצב חירום'],
+  [639,'אזור מוסדות חינוך'],
+  [901,'אתר עבודה בדרך'],
+].map(([n,a])=>({img:signURL(n), cls:'sign', a, preload:true}));
+
+/* ============ דגלים — כל מדינות העולם ============ */
+const FLAG_LIST = [
+['il','ישראל'],['us','ארצות הברית'],['gb','בריטניה'],['fr','צרפת'],['de','גרמניה'],['it','איטליה'],
+['es','ספרד'],['pt','פורטוגל'],['gr','יוון'],['cy','קפריסין'],['tr','טורקיה'],['ru','רוסיה'],
+['ua','אוקראינה'],['pl','פולין'],['nl','הולנד'],['be','בלגיה'],['ch','שווייץ'],['at','אוסטריה'],
+['se','שוודיה'],['no','נורווגיה'],['dk','דנמרק'],['fi','פינלנד'],['is','איסלנד'],['ie','אירלנד'],
+['cz','צ׳כיה'],['sk','סלובקיה'],['si','סלובניה'],['hu','הונגריה'],['ro','רומניה'],['bg','בולגריה'],
+['hr','קרואטיה'],['rs','סרביה'],['ba','בוסניה והרצגובינה'],['me','מונטנגרו'],['mk','צפון מקדוניה'],
+['al','אלבניה'],['ee','אסטוניה'],['lv','לטביה'],['lt','ליטא'],['by','בלארוס'],['md','מולדובה'],
+['lu','לוקסמבורג'],['mt','מלטה'],['ad','אנדורה'],['mc','מונקו'],['sm','סן מרינו'],['li','ליכטנשטיין'],
+['va','הוותיקן'],['ge','גאורגיה'],['am','ארמניה'],['az','אזרבייג׳ן'],
+['jp','יפן'],['cn','סין'],['kr','דרום קוריאה'],['kp','צפון קוריאה'],['tw','טאיוואן'],['mn','מונגוליה'],
+['in','הודו'],['pk','פקיסטן'],['bd','בנגלדש'],['lk','סרי לנקה'],['np','נפאל'],['bt','בהוטן'],['mv','המלדיביים'],
+['th','תאילנד'],['vn','וייטנאם'],['kh','קמבודיה'],['la','לאוס'],['mm','מיאנמר'],['my','מלזיה'],
+['sg','סינגפור'],['id','אינדונזיה'],['ph','הפיליפינים'],['bn','ברוניי'],['tl','מזרח טימור'],
+['kz','קזחסטן'],['uz','אוזבקיסטן'],['tm','טורקמניסטן'],['kg','קירגיזסטן'],['tj','טג׳יקיסטן'],['af','אפגניסטן'],
+['ir','איראן'],['iq','עיראק'],['sy','סוריה'],['lb','לבנון'],['jo','ירדן'],['sa','ערב הסעודית'],
+['ae','איחוד האמירויות'],['qa','קטאר'],['bh','בחריין'],['kw','כווית'],['om','עומאן'],['ye','תימן'],
+['eg','מצרים'],['ma','מרוקו'],['dz','אלג׳יריה'],['tn','תוניסיה'],['ly','לוב'],['sd','סודן'],['ss','דרום סודן'],
+['et','אתיופיה'],['er','אריתריאה'],['dj','ג׳יבוטי'],['so','סומליה'],['ke','קניה'],['tz','טנזניה'],
+['ug','אוגנדה'],['rw','רואנדה'],['bi','בורונדי'],['cd','קונגו הדמוקרטית'],['cg','קונגו'],['ga','גבון'],
+['gq','גינאה המשוונית'],['cm','קמרון'],['cf','הרפובליקה המרכז־אפריקאית'],['td','צ׳אד'],['ne','ניז׳ר'],
+['ng','ניגריה'],['bj','בנין'],['tg','טוגו'],['gh','גאנה'],['ci','חוף השנהב'],['lr','ליבריה'],
+['sl','סיירה לאון'],['gn','גינאה'],['gw','גינאה ביסאו'],['sn','סנגל'],['gm','גמביה'],['ml','מאלי'],
+['bf','בורקינה פאסו'],['mr','מאוריטניה'],['cv','כף ורדה'],['st','סאו טומה ופרינסיפה'],
+['ao','אנגולה'],['zm','זמביה'],['zw','זימבבואה'],['mw','מלאווי'],['mz','מוזמביק'],['mg','מדגסקר'],
+['mu','מאוריציוס'],['sc','סיישל'],['km','קומורו'],['na','נמיביה'],['bw','בוצואנה'],['za','דרום אפריקה'],
+['ls','לסוטו'],['sz','אסוואטיני'],
+['ca','קנדה'],['mx','מקסיקו'],['gt','גואטמלה'],['bz','בליז'],['hn','הונדורס'],['sv','אל סלבדור'],
+['ni','ניקרגואה'],['cr','קוסטה ריקה'],['pa','פנמה'],['cu','קובה'],['jm','ג׳מייקה'],['ht','האיטי'],
+['do','הרפובליקה הדומיניקנית'],['bs','איי בהאמה'],['bb','ברבדוס'],['tt','טרינידד וטובגו'],
+['gd','גרנדה'],['lc','סנט לוסיה'],['vc','סנט וינסנט והגרנדינים'],['ag','אנטיגואה וברבודה'],['kn','סנט קיטס ונוויס'],['dm','דומיניקה'],
+['co','קולומביה'],['ve','ונצואלה'],['gy','גיאנה'],['sr','סורינאם'],['ec','אקוודור'],['pe','פרו'],
+['br','ברזיל'],['bo','בוליביה'],['py','פרגוואי'],['uy','אורוגוואי'],['ar','ארגנטינה'],['cl','צ׳ילה'],
+['au','אוסטרליה'],['nz','ניו זילנד'],['pg','פפואה גינאה החדשה'],['fj','פיג׳י'],['sb','איי שלמה'],
+['vu','ונואטו'],['ws','סמואה'],['to','טונגה'],['ki','קיריבטי'],['tv','טובאלו'],['nr','נאורו'],
+['pw','פלאו'],['fm','מיקרונזיה'],['mh','איי מרשל'],
+];
+const FLAG_ITEMS = FLAG_LIST.map(([c,n])=>({img:`https://flagcdn.com/w320/${c}.png`, cls:'flag', a:n}));
+
+/* ============ בירות ============ */
+const CAP_ITEMS = [
+['ישראל','ירושלים'],['צרפת','פריז'],['בריטניה','לונדון'],['גרמניה','ברלין'],['איטליה','רומא'],
+['ספרד','מדריד'],['פורטוגל','ליסבון'],['יוון','אתונה'],['רוסיה','מוסקבה'],['אוקראינה','קייב'],
+['פולין','ורשה'],['הולנד','אמסטרדם'],['בלגיה','בריסל'],['שווייץ','ברן'],['אוסטריה','וינה'],
+['שוודיה','שטוקהולם'],['נורווגיה','אוסלו'],['דנמרק','קופנהגן'],['פינלנד','הלסינקי'],['איסלנד','רייקיאוויק'],
+['אירלנד','דבלין'],['צ׳כיה','פראג'],['סלובקיה','ברטיסלבה'],['הונגריה','בודפשט'],['רומניה','בוקרשט'],
+['בולגריה','סופיה'],['קרואטיה','זאגרב'],['סרביה','בלגרד'],['אסטוניה','טאלין'],['לטביה','ריגה'],
+['ליטא','וילנה'],['טורקיה','אנקרה'],['גאורגיה','טביליסי'],['ארמניה','ירוואן'],['אזרבייג׳ן','באקו'],
+['יפן','טוקיו'],['סין','בייג׳ינג'],['דרום קוריאה','סיאול'],['צפון קוריאה','פיונגיאנג'],['מונגוליה','אולן בטור'],
+['הודו','ניו דלהי'],['פקיסטן','איסלמאבאד'],['בנגלדש','דאקה'],['נפאל','קטמנדו'],['תאילנד','בנגקוק'],
+['וייטנאם','האנוי'],['קמבודיה','פנום פן'],['מלזיה','קואלה לומפור'],['אינדונזיה','ג׳קרטה'],
+['הפיליפינים','מנילה'],['קזחסטן','אסטנה'],['איראן','טהרן'],['עיראק','בגדאד'],['סוריה','דמשק'],
+['לבנון','ביירות'],['ירדן','עמאן'],['ערב הסעודית','ריאד'],['איחוד האמירויות','אבו דאבי'],
+['קטאר','דוחה'],['כווית','כווית סיטי'],['עומאן','מוסקט'],['תימן','צנעא'],['קפריסין','ניקוסיה'],
+['מצרים','קהיר'],['מרוקו','רבאט'],['אלג׳יריה','אלג׳יר'],['תוניסיה','תוניס'],['לוב','טריפולי'],
+['סודן','חרטום'],['אתיופיה','אדיס אבבה'],['קניה','ניירובי'],['טנזניה','דודומה'],['אוגנדה','קמפלה'],
+['ניגריה','אבוג׳ה'],['גאנה','אקרה'],['סנגל','דקר'],['דרום אפריקה','פרטוריה'],['זימבבואה','הרארה'],
+['אנגולה','לואנדה'],['מדגסקר','אנטננריבו'],
+['קנדה','אוטווה'],['ארצות הברית','וושינגטון'],['מקסיקו','מקסיקו סיטי'],['גואטמלה','גואטמלה סיטי'],
+['קובה','הוואנה'],['ג׳מייקה','קינגסטון'],['פנמה','פנמה סיטי'],['קוסטה ריקה','סן חוסה'],
+['קולומביה','בוגוטה'],['ונצואלה','קראקס'],['אקוודור','קיטו'],['פרו','לימה'],['ברזיל','ברזיליה'],
+['בוליביה','לה פאס'],['פרגוואי','אסונסיון'],['אורוגוואי','מונטווידאו'],['ארגנטינה','בואנוס איירס'],
+['צ׳ילה','סנטיאגו'],['אוסטרליה','קנברה'],['ניו זילנד','ולינגטון'],['פיג׳י','סובה'],
+['אלבניה','טירנה'],['סלובניה','ליובליאנה'],['בוסניה והרצגובינה','סרייבו'],['מונטנגרו','פודגוריצה'],
+['צפון מקדוניה','סקופיה'],['בלארוס','מינסק'],['מולדובה','קישינב'],['לוקסמבורג','לוקסמבורג'],
+['מלטה','ולטה'],['אוזבקיסטן','טשקנט'],['אפגניסטן','קאבול'],['סינגפור','סינגפור'],
+['לאוס','ויאנטיאן'],['בחריין','מנאמה'],['הונדורס','טגוסיגלפה'],['ניקרגואה','מנגואה'],
+['האיטי','פורט־או־פרנס'],['הרפובליקה הדומיניקנית','סנטו דומינגו'],['רואנדה','קיגלי'],
+['מוזמביק','מפוטו'],['נמיביה','וינדהוק'],['בוצואנה','גבורונה'],['זמביה','לוסקה'],['סומליה','מוגדישו'],
+].map(([c,cap])=>({q:`מהי בירת ${c}?`, a:cap}));
+
+/* ============ מקומות מפורסמים — תמונות אמיתיות מוויקיפדיה ============ */
+const PLACE_ITEMS = [
+['Eiffel_Tower','🗼','מגדל אייפל','פריז, צרפת'],
+['Statue_of_Liberty','🗽','פסל החירות','ניו יורק, ארה"ב'],
+['Great_Pyramid_of_Giza','🔺','הפירמידה הגדולה של גיזה','מצרים'],
+['Colosseum','🏟️','הקולוסיאום','רומא, איטליה'],
+['Great_Wall_of_China','🧱','החומה הגדולה','סין'],
+['Taj_Mahal','🕌','הטאג׳ מהאל','הודו'],
+['Big_Ben','🕰️','ביג בן','לונדון, בריטניה'],
+['Golden_Gate_Bridge','🌉','גשר שער הזהב','סן פרנסיסקו, ארה"ב'],
+['Sydney_Opera_House','🎭','בית האופרה','סידני, אוסטרליה'],
+['Machu_Picchu','⛰️','מאצ׳ו פיצ׳ו','פרו'],
+['Moai','🗿','פסלי המואי','אי הפסחא, צ׳ילה'],
+['Christ_the_Redeemer_(statue)','⛪','פסל ישו הגואל','ריו דה ז׳ניירו, ברזיל'],
+['Parthenon','🏛️','הפרתנון','אתונה, יוון'],
+['Moscow_Kremlin','🏰','הקרמלין','מוסקבה, רוסיה'],
+['Burj_Khalifa','🏙️','בורג׳ ח׳ליפה','דובאי, איחוד האמירויות'],
+['Petra','🏜️','פטרה','ירדן'],
+['Western_Wall','🕍','הכותל המערבי','ירושלים, ישראל'],
+['Leaning_Tower_of_Pisa','🏗️','המגדל הנטוי','פיזה, איטליה'],
+['Stonehenge','🪨','סטונהנג׳','אנגליה'],
+['Mount_Fuji','🗻','הר פוג׳י','יפן'],
+['Niagara_Falls','💦','מפלי הניאגרה','גבול ארה"ב–קנדה'],
+['Grand_Canyon','🏞️','הגרנד קניון','אריזונה, ארה"ב'],
+['Brandenburg_Gate','🏛️','שער ברנדנבורג','ברלין, גרמניה'],
+['Sagrada_Família','⛪','הסגרדה פמיליה','ברצלונה, ספרד'],
+['Angkor_Wat','🛕','אנגקור ואט','קמבודיה'],
+['Times_Square','🌆','טיימס סקוור','ניו יורק, ארה"ב'],
+['Louvre','🖼️','מוזיאון הלובר','פריז, צרפת'],
+['Neuschwanstein_Castle','🏰','טירת נוישוונשטיין','גרמניה'],
+['Mount_Everest','🏔️','הר האוורסט','גבול נפאל–סין'],
+['Tower_Bridge','🌉','טאואר ברידג׳','לונדון, בריטניה'],
+['Buckingham_Palace','🏰','ארמון בקינגהאם','לונדון, בריטניה'],
+['Mount_Kilimanjaro','🏔️','הקילימנג׳רו','טנזניה'],
+['Hagia_Sophia','🕌','האיה סופיה','איסטנבול, טורקיה'],
+['Empire_State_Building','🏙️','האמפייר סטייט בילדינג','ניו יורק, ארה"ב'],
+['Dead_Sea','🌊','ים המלח','ישראל וירדן'],
+['Masada','⛰️','מצדה','ישראל'],
+['Chichen_Itza','🛕','צ׳יצ׳ן איצה','מקסיקו'],
+['Victoria_Falls','💦','מפלי ויקטוריה','גבול זמביה–זימבבואה'],
+['Matterhorn','🏔️','המטרהורן','גבול שווייץ–איטליה'],
+['Uluru','🪨','אולורו','אוסטרליה'],
+['Trevi_Fountain','⛲','מזרקת טרווי','רומא, איטליה'],
+['Pantheon,_Rome','🏛️','הפנתאון','רומא, איטליה'],
+['Notre-Dame_de_Paris','⛪','קתדרלת נוטרדאם','פריז, צרפת'],
+['Arc_de_Triomphe','🏛️','שער הניצחון','פריז, צרפת'],
+['Palace_of_Versailles','🏰','ארמון ורסאי','צרפת'],
+['Mont-Saint-Michel','🏰','מון סן־מישל','צרפת'],
+['Alhambra','🏰','אלהמברה','גרנדה, ספרד'],
+['Charles_Bridge','🌉','גשר קארל','פראג, צ׳כיה'],
+['Red_Square','🏛️','הכיכר האדומה','מוסקבה, רוסיה'],
+['Sultan_Ahmed_Mosque','🕌','המסגד הכחול','איסטנבול, טורקיה'],
+['Forbidden_City','🏯','העיר האסורה','בייג׳ינג, סין'],
+['Kinkaku-ji','🏯','מקדש הזהב (קינקאקו־ג׳י)','קיוטו, יפן'],
+['Tokyo_Tower','🗼','מגדל טוקיו','יפן'],
+['Mount_Rushmore','🗿','הר ראשמור','דרום דקוטה, ארה"ב'],
+['Hollywood_Sign','🎬','שלט הוליווד','לוס אנג׳לס, ארה"ב'],
+['White_House','🏛️','הבית הלבן','וושינגטון, ארה"ב'],
+['CN_Tower','🗼','מגדל CN','טורונטו, קנדה'],
+['Iguazu_Falls','💦','מפלי איגואסו','גבול ברזיל–ארגנטינה'],
+['Table_Mountain','⛰️','הר השולחן','קייפטאון, דרום אפריקה'],
+['Marina_Bay_Sands','🏨','מרינה ביי סנדס','סינגפור'],
+['Edinburgh_Castle','🏰','טירת אדינבורו','סקוטלנד'],
+['Shrine_of_the_Báb','🌸','הגנים הבהאיים','חיפה, ישראל'],
+['Azrieli_Center','🏙️','מגדלי עזריאלי','תל אביב, ישראל'],
+].map(([title,e,name,loc])=>({wiki:title, emoji:e, q:`איפה נמצא ${name}?`, a:loc}));
+
+/* ============ סמלי רכבים — לוגואים אמיתיים ============ */
+const carURL = s => `https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/optimized/${s}.png`;
+const CAR_ITEMS = [
+['audi','אאודי'],['mercedes-benz','מרצדס'],['bmw','ב.מ.וו'],['ferrari','פרארי'],
+['lamborghini','למבורגיני'],['peugeot','פיג׳ו'],['renault','רנו'],['toyota','טויוטה'],
+['hyundai','יונדאי'],['honda','הונדה'],['jaguar','יגואר'],['mitsubishi','מיצובישי'],
+['subaru','סובארו'],['volkswagen','פולקסווגן'],['skoda','סקודה'],['opel','אופל'],
+['tesla','טסלה'],['volvo','וולוו'],['alfa-romeo','אלפא רומיאו'],['porsche','פורשה'],
+['chevrolet','שברולט'],['mazda','מאזדה'],['nissan','ניסאן'],['citroen','סיטרואן'],
+['kia','קיה'],['suzuki','סוזוקי'],['fiat','פיאט'],['seat','סיאט'],['mini','מיני'],
+['ford','פורד'],['lexus','לקסוס'],['dacia','דאצ׳יה'],['mg','MG'],['byd','BYD'],
+['chery','צ׳רי'],['geely','ג׳ילי'],['land-rover','לנד רובר'],['rolls-royce','רולס רויס'],
+['bentley','בנטלי'],['bugatti','בוגאטי'],['maserati','מזראטי'],['jeep','ג׳יפ'],
+['dodge','דודג׳'],['cadillac','קדילק'],['infiniti','אינפיניטי'],
+['mclaren','מקלארן'],['aston-martin','אסטון מרטין'],['lotus','לוטוס'],['koenigsegg','קניגסג'],
+['pagani','פאגאני'],['smart','סמארט'],['isuzu','איסוזו'],['ssangyong','סאנגיונג'],
+['genesis','ג׳נסיס'],['cupra','קופרה'],['polestar','פולסטאר'],['abarth','אבארט'],
+['alpine','אלפין'],['saab','סאאב'],['hummer','האמר'],['gmc','GMC'],
+['ram','ראם'],['lincoln','לינקולן'],['acura','אקורה'],['tata','טאטא'],
+].map(([s,a])=>({img:carURL(s), cls:'logo', a, preload:true}));
+
+/* ============ סמלים וסימנים ============ */
+const SYM_ITEMS = [
+['$','דולר'],['€','אירו'],['₪','שקל חדש'],['£','לירה שטרלינג'],['¥','ין יפני / יואן סיני'],
+['%','אחוז'],['‰','פרומיל'],['&','אמפרסנד (וגם)'],['@','כרוכית (שטרודל)'],['#','סולמית'],
+['©','זכויות יוצרים'],['®','סימן מסחר רשום'],['™','סימן מסחרי'],['§','סימן סעיף'],
+['∞','אינסוף'],['π','פאי'],['Ω','אומגה'],['√','שורש ריבועי'],['±','פלוס־מינוס'],
+['≠','לא שווה'],['÷','חילוק'],['°','מעלות'],['µ','מיקרו'],['Δ','דלתא'],['∑','סכום (סיגמא)'],
+['≈','בערך שווה'],['≤','קטן או שווה'],['α','אלפא'],['β','בטא'],['λ','למדא'],['θ','תטא'],
+['¢','סנט'],['₩','וון קוריאני'],['₹','רופי הודי'],['₿','ביטקוין'],['¶','סימן פסקה'],['№','סימן מספר'],
+['½','חצי'],['¾','שלושה רבעים'],['*','כוכבית'],['^','חזקה (כובעון)'],['~','טילדה'],
+['/','לוכסן'],['\\','לוכסן הפוך'],['|','קו אנכי'],['≥','גדול או שווה'],['∫','אינטגרל'],
+['∅','קבוצה ריקה'],['₺','לירה טורקית'],['✓','סימן וי (אישור)'],['…','שלוש נקודות (אליפסיס)'],['Ψ','פסי'],
+].map(([g,a])=>({glyph:g, q:'מה שם הסמל?', a}));
+
+/* ============ ראשי תיבות בעברית ============ */
+const ACRO_ITEMS = [
+['תנ"ך','תורה, נביאים, כתובים',['תפילות, ניגונים, כתבים','תולדות נביאי כנען','תקנות נוסח קדום']],
+['צה"ל','צבא ההגנה לישראל',['צוות החירום הלאומי','צבא החלוץ הלוחם','צוות הצלה לאומי']],
+['מד"א','מגן דוד אדום',['מרכז דחוף ארצי','משמר דרכים ארצי','מערך דיווח אמבולנסים']],
+['חו"ל','חוץ לארץ',['חוץ לישראל','חופשה ולינה','חוזה לאומי']],
+['סכו"ם','סכין, כף ומזלג',['סכינים, כפות ומצקות','סדר כלים ומטבח','סט כלים ומגשים']],
+['דו"ח','דין וחשבון',['דיווח וחקירה','דרישה וחובה','דיווח חודשי']],
+['מו"מ','משא ומתן',['מכירה ומיקוח','מפגש ומשוב','מסמך ומכתב']],
+['עו"ד','עורך דין',['עוזר דין','עד ודיין','עורך דברים']],
+['רמטכ"ל','ראש המטה הכללי',['ראש מנהלת הטכנולוגיה הכללית','רב מפקדים טכני כללי','ראש מערך הטיס הכללי']],
+['ח"כ','חבר כנסת',['חבר כבוד','חתום כדין','חבר כנס']],
+['רה"מ','ראש הממשלה',['ראש המדינה','ראש המטה','ראש המועצה']],
+['שב"כ','שירות הביטחון הכללי',['שירות הביון הכללי','שומרי ביטחון הכנסת','שירות בקרת כניסה']],
+['ביה"ס','בית הספר',['בית הסוהר','בית הספרים','בית הסטודנטים']],
+['אח"מ','אדם חשוב מאוד',['אורח חשוב מאוד','אזרח חופשי מאוד','איש חוק מוסמך']],
+['סופ"ש','סוף שבוע',['סיום פעילות שבועי','סוף פרשת השבוע','סדר פעילות שבועי']],
+['חז"ל','חכמינו זכרונם לברכה',['חכמים זקנים לדורות','חכמת זקני הלאום','חבורת זקני הלשון']],
+['צל"ש','ציון לשבח',['ציון לשירות','צו לשעה','ציון לימודי שנתי']],
+['קב"ט','קצין ביטחון',['קצין בטיחות','קצין בקרת טיסה','קבלן טכני']],
+['מל"ט','מטוס ללא טייס',['מנוע ללא טייס','מערכת לניווט טילים','מכשיר לווייני טקטי']],
+['מנכ"ל','מנהל כללי',['ממונה נכסים כללי','מנהל כספים לאומי','מזכיר נבחר כללי']],
+['סמנכ"ל','סגן מנהל כללי',['סגן ממונה כללי','סוכן מכירות לאומי','סמכות ניהול כללית']],
+['מזכ"ל','מזכיר כללי',['מפקד זרוע כללי','מנהל זכויות כללי','מרכז זרועות כללי']],
+['מכ"ם','מגלה כיוון ומרחק',['מגלה כיוונים מרחוק','מכשיר כיול מרחק','מערכת כיוון ומדידה']],
+['אג"ח','איגרת חוב',['אגרת חובה','אגודת חיסכון','אישור גבייה חודשי']],
+['בע"מ','בערבון מוגבל',['בעלות מוגבלת','בערבות ממשלתית','בעסק מורשה']],
+['כנ"ל','כנזכר לעיל',['כאמור לעיל','ככתוב למעלה','כן, נכון לגמרי']],
+['לפנה"ס','לפני הספירה',['לפי הספירה','לפני הסוף','לפני השנה']],
+['ממ"ד','מרחב מוגן דירתי',['מקלט מוגן דירתי','מתחם מוגן לדיירים','מבנה מחוזק דירתי']],
+['ראשל"צ','ראשון לציון',['ראש לציון','ראשות לציבור','ראש הלשכה לציון']],
+['תפו"ז','תפוח זהב',['תוצרת פרי זהב','תפוח זן','תפוצת זרעים']],
+['פז"ם','פרק זמן מינימלי',['פרק זמן מקסימלי','פקודת זימון מילואים','פרק זמן מוגדר']],
+['או"ם','האומות המאוחדות',['ארגון עולמי מאוחד','איחוד עמים מרכזי','אומות ומדינות']],
+['נתב"ג','נמל התעופה בן־גוריון',['נמל תעופה בינלאומי גדול','נקודת תעבורה בינלאומית','נמל תעופה בין־יבשתי גלובלי']],
+['רש"ת','רשות שדות התעופה',['רשות שירותי התחבורה','רשת שירותי תיירות','רשות שמירת התנועה']],
+['נ"מ','נגד מטוסים',['נגד מסוקים','נשק מתקדם','ניווט מדויק']],
+['מפכ"ל','המפקח הכללי (של המשטרה)',['המפקד הכללי','ממונה פיקוד כללי','מפקח כספים לאומי']],
+['מג"ב','משמר הגבול',['מגן גבולות','משטרת גבולות','מערך גבולות']],
+['שב"ס','שירות בתי הסוהר',['שומרי בתי הסוהר','שירות ביטחון סביבתי','שירות ביקורת סדר']],
+['חי"ר','חיל רגלים',['חיל רובאים','חטיבת יחידות רגליות','חיל ראשון']],
+['חפ"ק','חבורת פיקוד קדמית',['חדר פיקוד קדמי','חוליית פעולה קרבית','חיל פריסה קדמית']],
+['מ"פ','מפקד פלוגה',['מפקד פיקוד','מפקח פנימי','ממלא פקודות']],
+['רב"ט','רב־טוראי',['רב טכנאי','ראש בסיס טירונים','רב־טוראים']],
+['רס"ן','רב־סרן',['רב־סמל נגד','ראש סגל ניהול','רב־סמל ניהולי']],
+['סא"ל','סגן־אלוף',['סגן אדמירל','סרן על','סגל אימונים לוחם']],
+['תא"ל','תת־אלוף',['תת־אדמירל','תואר אלוף','תפקיד אלוף לוחם']],
+['בג"ץ','בית המשפט הגבוה לצדק',['בית הדין הגבוה לצדק','בית גדול לציבור','בית המשפט הגבוה לציון']],
+['ביהמ"ש','בית המשפט',['בית המשטרה','בית המשכן','בית המשלחת']],
+['יו"ר','יושב ראש',['יועץ ראשי','יושב ראשון','יוזם ראשי']],
+['מע"מ','מס ערך מוסף',['מס ערך מצטבר','מס עסקים מקומי','מענק ממשלתי']],
+['נדל"ן','נכסי דלא ניידי',['נכסי דירות למגורים ונופש','נכסים דלא נזילים','נדבך לאומי ניידי']],
+['שכ"ד','שכר דירה',['שכר דירקטורים','שיק כספי דחוי','שכר דחוי']],
+['מו"פ','מחקר ופיתוח',['מחקר ופרסום','מבצעים ופרויקטים','מנהל ופיקוח']],
+['אש"ל','אוכל, שתייה, לינה',['אירוח, שירות, לינה','אישור שהייה לעובד','אוכל של לילה']],
+['קק"ל','קרן קימת לישראל',['קרן קליטה לעולים','קרן קהילתית לישראל','קופת קרנות לאומית']],
+['קופ"ח','קופת חולים',['קופת חיסכון','קופת חירום','קופת החזרים']],
+['ת"ז','תעודת זהות',['תעודת זכאות','תיק זיהוי','תו זהב']],
+['ת"ד','תא דואר',['תיבת דואר','תעודת דיוור','תחנת דואר']],
+['ד"ש','דרישת שלום',['דבר שלום','דואר שליחים','דרך שלום']],
+['ז"ל','זכרונו לברכה',['זיכרון לעד','זכר לדורות','זה לשעבר']],
+['מוצ"ש','מוצאי שבת',['מועד צאת השבת','מוצאי צום שבועי','מועדון של שבת']],
+['אחה"צ','אחר הצהריים',['אחרי הצלצול','אחת הצהריים','אחרי הצום']],
+['קמ"ש','קילומטרים לשעה',['קצב מהירות שיא','קילומטרים שבועיים','קפיצת מרחק שעתית']],
+['נ"צ','נקודת ציון',['נקודת צפייה','ניווט צבאי','נתיב צפוני']],
+['בד"כ','בדרך כלל',['בדיוק ככה','בדרך כזו','בדיקה כללית']],
+['עפ"י','על פי',['על פני','על פי יושר','עיקרון פסיקה יסודי']],
+['הנ"ל','הנזכר לעיל',['הנאמר להלן','הנוסח לעיל','הנושא הלאומי']],
+['אעפ"כ','אף על פי כן',['אין עוררין על כך','אף עם פרטים כאלה','אחרי עיון פרטני כולל']],
+['טל"ח','טעות לעולם חוזרת',['טעות לא חוזרת','טעות לא חשובה','טופס לחתימה']],
+['שו"ת','שאלות ותשובות',['שירות ותמיכה','שיחות ותגובות','שאילתות ותלונות']],
+['סת"ם','ספרי תורה, תפילין ומזוזות',['סתם, בלי משמעות','סימנים, תווים ומספרים','סופרי תורה מוסמכים']],
+['זבש"ך','זו בעיה שלך',['זה בשבילך','זו ברכה שלך','זמן בילוי שלך']],
+].map(([g,a,d])=>({glyph:g, gcls:'acro', q:'מה פירוש ראשי התיבות?', a, d}));
+
+/* ============ מילים באנגלית ============ */
+const ENG_ITEMS = [
+['achieve','להשיג'],['improve','לשפר'],['receive','לקבל'],['decide','להחליט'],['discover','לגלות'],
+['avoid','להימנע'],['borrow','לשאול (חפץ)'],['guess','לנחש'],['invite','להזמין'],['promise','להבטיח'],
+['refuse','לסרב'],['punish','להעניש'],['steal','לגנוב'],['trust','לבטוח'],['whisper','ללחוש'],
+['remember','לזכור'],['understand','להבין'],['fail','להיכשל'],['suddenly','פתאום'],['although','למרות ש...'],
+['forever','לנצח'],['environment','סביבה'],['government','ממשלה'],['knowledge','ידע'],['wisdom','חוכמה'],
+['freedom','חופש'],['success','הצלחה'],['opinion','דעה'],['secret','סוד'],['journey','מסע'],
+['language','שפה'],['science','מדע'],['skill','מיומנות'],['damage','נזק'],['safety','בטיחות'],
+['height','גובה'],['temperature','טמפרטורה'],['weather','מזג אוויר'],['ocean','אוקיינוס'],['island','אי'],
+['coast','חוף'],['village','כפר'],['neighbor','שכן'],['enemy','אויב'],['luggage','מזוודות'],
+['ancient','עתיק'],['brave','אמיץ'],['curious','סקרן'],['dangerous','מסוכן'],['famous','מפורסם'],
+['foreign','זר'],['huge','ענק'],['tiny','זעיר'],['lazy','עצלן'],['patient','סבלני'],
+['proud','גאה'],['honest','ישר / כן'],['fair','הוגן'],['strange','מוזר'],['spicy','חריף'],
+['quiet','שקט'],['empty','ריק'],['expensive','יקר'],['rare','נדיר'],['narrow','צר'],
+['wide','רחב'],['weak','חלש'],['wealthy','עשיר'],['lonely','בודד'],['shy','ביישן'],
+['useful','שימושי'],['scared','מפוחד'],
+['argue','להתווכח'],['blame','להאשים'],['complain','להתלונן'],['confused','מבולבל'],
+['crowded','צפוף'],['delay','עיכוב'],['destroy','להרוס'],['effort','מאמץ'],
+['escape','לברוח'],['explain','להסביר'],['flood','שיטפון'],['jealous','מקנא'],
+['mistake','טעות'],['nervous','לחוץ / עצבני'],['polite','מנומס'],['prefer','להעדיף'],
+['prepare','להתכונן'],['protect','להגן'],['similar','דומה'],['solve','לפתור'],
+['support','לתמוך'],['warn','להזהיר'],['selfish','אנוכי'],
+['admire','להעריץ'],['agree','להסכים'],['allow','להרשות'],['announce','להכריז'],['apologize','להתנצל'],
+['arrive','להגיע'],['attack','לתקוף'],['attract','למשוך'],['believe','להאמין'],['celebrate','לחגוג'],
+['choose','לבחור'],['collect','לאסוף'],['compare','להשוות'],['continue','להמשיך'],['create','ליצור'],
+['disappear','להיעלם'],['disturb','להפריע'],['dream','לחלום'],['earn','להרוויח'],['encourage','לעודד'],
+['fix','לתקן'],['forgive','לסלוח'],['hide','להסתתר'],['imagine','לדמיין'],['increase','להגדיל'],
+['join','להצטרף'],['lend','להלוות'],['lie','לשקר'],['manage','לנהל'],['mention','לציין'],
+['notice','להבחין'],['obey','לציית'],['offer','להציע'],['persuade','לשכנע'],['pollute','לזהם'],
+['pretend','להעמיד פנים'],['prevent','למנוע'],['prove','להוכיח'],['recognize','לזהות'],['recommend','להמליץ'],
+['reduce','להפחית'],['remind','להזכיר'],['repeat','לחזור על'],['replace','להחליף'],['rescue','לחלץ'],
+['respect','לכבד'],['save','להציל'],['scream','לצרוח'],['search','לחפש'],['separate','להפריד'],
+['share','לשתף'],['succeed','להצליח'],['suffer','לסבול'],['surround','להקיף'],['survive','לשרוד'],
+['threaten','לאיים'],['translate','לתרגם'],['travel','לטייל'],['waste','לבזבז'],['wonder','לתהות'],
+['worry','לדאוג'],
+['ability','יכולת'],['adventure','הרפתקה'],['advice','עצה'],['argument','ויכוח'],['audience','קהל'],
+['beauty','יופי'],['century','מאה (100 שנה)'],['championship','אליפות'],['choice','בחירה'],['citizen','אזרח'],
+['courage','אומץ'],['crime','פשע'],['culture','תרבות'],['customer','לקוח'],['danger','סכנה'],
+['decision','החלטה'],['desert','מדבר'],['direction','כיוון'],['disease','מחלה'],['distance','מרחק'],
+['doubt','ספק'],['earthquake','רעידת אדמה'],['education','חינוך'],['emergency','מקרה חירום'],['experience','ניסיון'],
+['fear','פחד'],['forest','יער'],['future','עתיד'],['goal','מטרה / שער (בספורט)'],['habit','הרגל'],
+['health','בריאות'],['hero','גיבור'],['invention','המצאה'],['judge','שופט'],['law','חוק'],
+['memory','זיכרון'],['mystery','תעלומה'],['nature','טבע'],['noise','רעש'],['population','אוכלוסייה'],
+['poverty','עוני'],['prize','פרס'],['quality','איכות'],['reason','סיבה'],['responsibility','אחריות'],
+['solution','פתרון'],['strength','כוח / חוזק'],['thought','מחשבה'],['tradition','מסורת'],['truth','אמת'],
+['victory','ניצחון'],['weapon','נשק'],['weight','משקל'],['wound','פצע'],
+['available','זמין'],['awful','נורא'],['boring','משעמם'],['calm','רגוע'],['careful','זהיר'],
+['cheap','זול'],['comfortable','נוח'],['common','נפוץ'],['cruel','אכזרי'],['deep','עמוק'],
+['delicious','טעים'],['different','שונה'],['disappointed','מאוכזב'],['embarrassed','נבוך'],['enormous','עצום'],
+['excellent','מצוין'],['exhausted','מותש'],['fragile','שביר'],['generous','נדיב'],['gentle','עדין'],
+['grateful','אסיר תודה'],['guilty','אשם'],['harmful','מזיק'],['healthy','בריא'],['impossible','בלתי אפשרי'],
+['independent','עצמאי'],['international','בינלאומי'],['loyal','נאמן'],['modern','מודרני'],['necessary','הכרחי'],
+['obvious','מובן מאליו'],['ordinary','רגיל'],['powerful','רב־עוצמה'],['private','פרטי'],['responsible','אחראי'],
+['rude','גס רוח'],['serious','רציני'],['sharp','חד'],['smooth','חלק'],['sour','חמוץ'],
+['strict','קפדני'],['stubborn','עקשן'],['suspicious','חשדן'],['thirsty','צמא'],['ugly','מכוער'],
+['violent','אלים'],['whole','שלם'],['probably','כנראה'],['immediately','מיד'],['rarely','לעיתים רחוקות'],
+].map(([g,a])=>({glyph:g, gcls:'eng', q:'מה פירוש המילה?', a}));
+
+/* ============ עברית ← אנגלית (מצב הפוך) ============ */
+const ENG_REV = ENG_ITEMS.map(it=>({glyph:it.a, gcls:'acro', q:'איך אומרים באנגלית?', a:it.glyph}));
+
+
+/* ============ קבוצות ספורט — לוגו נמשך בזמן אמת מוויקיפדיה ============ */
+const T = (wiki, a, grp, q) => ({wiki, a, grp, cls:'logo', q: q || 'איזו קבוצה זו?'});
+const FOOT_ITEMS = [
+// אירופה
+T('Real_Madrid_CF','ריאל מדריד','eu'), T('FC_Barcelona','ברצלונה','eu'), T('Atlético_Madrid','אתלטיקו מדריד','eu'),
+T('Sevilla_FC','סביליה','eu'), T('Manchester_United_F.C.','מנצ׳סטר יונייטד','eu'), T('Manchester_City_F.C.','מנצ׳סטר סיטי','eu'),
+T('Liverpool_F.C.','ליברפול','eu'), T('Chelsea_F.C.','צ׳לסי','eu'), T('Arsenal_F.C.','ארסנל','eu'),
+T('Tottenham_Hotspur_F.C.','טוטנהאם','eu'), T('FC_Bayern_Munich','באיירן מינכן','eu'), T('Borussia_Dortmund','בורוסיה דורטמונד','eu'),
+T('Bayer_04_Leverkusen','באייר לברקוזן','eu'), T('RB_Leipzig','לייפציג','eu'), T('Juventus_FC','יובנטוס','eu'),
+T('AC_Milan','מילאן','eu'), T('Inter_Milan','אינטר','eu'), T('SSC_Napoli','נאפולי','eu'), T('AS_Roma','רומא','eu'),
+T('Paris_Saint-Germain_F.C.','פריז סן־ז׳רמן','eu'), T('Olympique_de_Marseille','מארסיי','eu'),
+T('AFC_Ajax','אייאקס','eu'), T('PSV_Eindhoven','פ.ס.וו איינדהובן','eu'), T('FC_Porto','פורטו','eu'),
+T('S.L._Benfica','בנפיקה','eu'), T('Sporting_CP','ספורטינג ליסבון','eu'), T('Celtic_F.C.','סלטיק','eu'),
+T('Rangers_F.C.','ריינג׳רס','eu'), T('Galatasaray_S.K._(football)','גלאטסראיי','eu'),
+T('Fenerbahçe_S.K._(football)','פנרבחצ׳ה','eu'), T('Olympiacos_F.C.','אולימפיאקוס','eu'),
+// ספרד
+T('Real_Sociedad','ריאל סוסיאדד','eu'), T('Athletic_Bilbao','אתלטיק בילבאו','eu'), T('Valencia_CF','ולנסיה','eu'),
+T('Villarreal_CF','ויאריאל','eu'), T('Real_Betis','ריאל בטיס','eu'), T('Girona_FC','ג׳ירונה','eu'),
+T('Getafe_CF','חטאפה','eu'), T('RC_Celta_de_Vigo','סלטה ויגו','eu'), T('CA_Osasuna','אוססונה','eu'),
+T('RCD_Mallorca','מיורקה','eu'), T('RCD_Espanyol','אספניול','eu'), T('Rayo_Vallecano','ראיו וייקאנו','eu'),
+T('Deportivo_Alavés','אלאבס','eu'), T('UD_Las_Palmas','לאס פלמאס','eu'),
+// אנגליה
+T('Newcastle_United_F.C.','ניוקאסל','eu'), T('Aston_Villa_F.C.','אסטון וילה','eu'), T('West_Ham_United_F.C.','ווסטהאם','eu'),
+T('Everton_F.C.','אברטון','eu'), T('Leicester_City_F.C.','לסטר סיטי','eu'), T('Leeds_United_F.C.','לידס','eu'),
+T('Brighton_&_Hove_Albion_F.C.','ברייטון','eu'), T('Wolverhampton_Wanderers_F.C.','וולבס','eu'),
+T('Crystal_Palace_F.C.','קריסטל פאלאס','eu'), T('Fulham_F.C.','פולהאם','eu'), T('Brentford_F.C.','ברנטפורד','eu'),
+T('Nottingham_Forest_F.C.','נוטינגהאם פורסט','eu'), T('AFC_Bournemouth','בורנמות׳','eu'),
+T('Southampton_F.C.','סאות׳המפטון','eu'), T('Sunderland_A.F.C.','סנדרלנד','eu'),
+// איטליה
+T('SS_Lazio','לאציו','eu'), T('ACF_Fiorentina','פיורנטינה','eu'), T('Atalanta_BC','אטאלנטה','eu'),
+T('Torino_F.C.','טורינו','eu'), T('Bologna_F.C._1909','בולוניה','eu'), T('Genoa_C.F.C.','ג׳נואה','eu'),
+T('UC_Sampdoria','סמפדוריה','eu'), T('Udinese_Calcio','אודינזה','eu'), T('Parma_Calcio_1913','פארמה','eu'),
+T('Cagliari_Calcio','קליארי','eu'), T('Hellas_Verona_F.C.','הלאס ורונה','eu'), T('U.S._Sassuolo_Calcio','סאסואולו','eu'),
+T('Como_1907','קומו','eu'),
+// צרפת
+T('AS_Monaco_FC','מונאקו','eu'), T('Olympique_Lyonnais','ליון','eu'), T('Lille_OSC','ליל','eu'),
+T('OGC_Nice','ניס','eu'), T('RC_Lens','לאנס','eu'), T('Stade_Rennais_F.C.','רן','eu'),
+T('FC_Nantes','נאנט','eu'), T('RC_Strasbourg_Alsace','שטרסבורג','eu'), T('Montpellier_HSC','מונפלייה','eu'),
+T('Toulouse_FC','טולוז','eu'), T('AS_Saint-Étienne','סנט אטיין','eu'), T('FC_Girondins_de_Bordeaux','בורדו','eu'),
+// גרמניה
+T('Eintracht_Frankfurt','איינטרכט פרנקפורט','eu'), T('VfB_Stuttgart','שטוטגרט','eu'),
+T('Borussia_Mönchengladbach','בורוסיה מנשנגלדבך','eu'), T('VfL_Wolfsburg','וולפסבורג','eu'),
+T('SC_Freiburg','פרייבורג','eu'), T('TSG_1899_Hoffenheim','הופנהיים','eu'), T('1._FC_Union_Berlin','אוניון ברלין','eu'),
+T('SV_Werder_Bremen','ורדר ברמן','eu'), T('FC_Schalke_04','שאלקה','eu'), T('Hamburger_SV','המבורג','eu'),
+T('1._FC_Köln','קלן','eu'), T('1._FSV_Mainz_05','מיינץ','eu'),
+// שאר אירופה וליגת האלופות
+T('FC_Shakhtar_Donetsk','שחטאר דונייצק','eu'), T('FC_Dynamo_Kyiv','דינמו קייב','eu'),
+T('FC_Red_Bull_Salzburg','רד בול זלצבורג','eu'), T('Red_Star_Belgrade','הכוכב האדום בלגרד','eu'),
+T('GNK_Dinamo_Zagreb','דינמו זאגרב','eu'), T('Club_Brugge_KV','קלאב ברוז׳','eu'),
+T('R.S.C._Anderlecht','אנדרלכט','eu'), T('Feyenoord','פיינורד','eu'), T('AZ_Alkmaar','אלקמאר','eu'),
+T('S.C._Braga','בראגה','eu'), T('Beşiktaş_J.K.','בשיקטש','eu'), T('Trabzonspor','טראבזונספור','eu'),
+T('PAOK_FC','פאוק סלוניקי','eu'), T('AEK_Athens_F.C.','אאק אתונה','eu'), T('F.C._Copenhagen','קופנהגן','eu'),
+T('Malmö_FF','מאלמה','eu'), T('BSC_Young_Boys','יאנג בויז','eu'), T('FC_Basel','באזל','eu'),
+T('AC_Sparta_Prague','ספרטה פראג','eu'), T('SK_Slavia_Prague','סלביה פראג','eu'),
+T('Legia_Warsaw','לגיה ורשה','eu'), T('Ferencvárosi_TC','פרנצווארוש','eu'), T('Panathinaikos_F.C.','פנאתינייקוס','eu'),
+// ישראל
+T('Maccabi_Tel_Aviv_F.C.','מכבי תל אביב','il'), T('Maccabi_Haifa_F.C.','מכבי חיפה','il'),
+T("Hapoel_Be'er_Sheva_F.C.",'הפועל באר שבע','il'), T('Hapoel_Tel_Aviv_F.C.','הפועל תל אביב','il'),
+T('Beitar_Jerusalem_F.C.','בית״ר ירושלים','il'), T('Maccabi_Netanya_F.C.','מכבי נתניה','il'),
+T('Hapoel_Haifa_F.C.','הפועל חיפה','il'),
+// ארה"ב
+T('Inter_Miami_CF','אינטר מיאמי','us'), T('LA_Galaxy','אל.איי גלאקסי','us'), T('Los_Angeles_FC','לוס אנג׳לס FC','us'),
+T('New_York_City_FC','ניו יורק סיטי','us'), T('Seattle_Sounders_FC','סיאטל סאונדרס','us'), T('Atlanta_United_FC','אטלנטה יונייטד','us'),
+];
+const BBALL_ITEMS = [
+// NBA — כל 30 הקבוצות
+T('Atlanta_Hawks','אטלנטה הוקס','nba'), T('Boston_Celtics','בוסטון סלטיקס','nba'), T('Brooklyn_Nets','ברוקלין נטס','nba'),
+T('Charlotte_Hornets','שארלוט הורנטס','nba'), T('Chicago_Bulls','שיקגו בולס','nba'), T('Cleveland_Cavaliers','קליבלנד קאבלירס','nba'),
+T('Dallas_Mavericks','דאלאס מאבריקס','nba'), T('Denver_Nuggets','דנבר נאגטס','nba'), T('Detroit_Pistons','דטרויט פיסטונס','nba'),
+T('Golden_State_Warriors','גולדן סטייט ווריורס','nba'), T('Houston_Rockets','יוסטון רוקטס','nba'), T('Indiana_Pacers','אינדיאנה פייסרס','nba'),
+T('Los_Angeles_Clippers','לוס אנג׳לס קליפרס','nba'), T('Los_Angeles_Lakers','לוס אנג׳לס לייקרס','nba'),
+T('Memphis_Grizzlies','ממפיס גריזליס','nba'), T('Miami_Heat','מיאמי היט','nba'), T('Milwaukee_Bucks','מילווקי באקס','nba'),
+T('Minnesota_Timberwolves','מינסוטה טימברוולבס','nba'), T('New_Orleans_Pelicans','ניו אורלינס פליקנס','nba'),
+T('New_York_Knicks','ניו יורק ניקס','nba'), T('Oklahoma_City_Thunder','אוקלהומה סיטי ת׳אנדר','nba'),
+T('Orlando_Magic','אורלנדו מג׳יק','nba'), T('Philadelphia_76ers','פילדלפיה 76',
+'nba'), T('Phoenix_Suns','פיניקס סאנס','nba'), T('Portland_Trail_Blazers','פורטלנד טרייל בלייזרס','nba'),
+T('Sacramento_Kings','סקרמנטו קינגס','nba'), T('San_Antonio_Spurs','סן אנטוניו ספרס','nba'),
+T('Toronto_Raptors','טורונטו ראפטורס','nba'), T('Utah_Jazz','יוטה ג׳אז','nba'), T('Washington_Wizards','וושינגטון וויזארדס','nba'),
+// יורוליג
+T('Real_Madrid_Baloncesto','ריאל מדריד','el'), T('FC_Barcelona_Bàsquet','ברצלונה','el'),
+T('Panathinaikos_B.C.','פנאתינייקוס','el'), T('Olympiacos_B.C.','אולימפיאקוס','el'),
+T('Fenerbahçe_Basketball','פנרבחצ׳ה','el'), T('Anadolu_Efes_S.K.','אנאדולו אפס','el'),
+T('KK_Partizan','פרטיזן בלגרד','el'), T('KK_Crvena_zvezda','צרוונה זבזדה','el'),
+T('BC_Žalgiris','ז׳לגיריס קובנה','el'), T('Virtus_Bologna','וירטוס בולוניה','el'),
+T('Olimpia_Milano','אולימפיה מילאנו','el'), T('Saski_Baskonia','בסקוניה','el'),
+T('Valencia_Basket','ולנסיה','el'), T('AS_Monaco_Basket','מונאקו','el'),
+T('FC_Bayern_Munich_(basketball)','באיירן מינכן','el'), T('ALBA_Berlin','אלבה ברלין','el'),
+T('Paris_Basketball','פריז בסקטבול','el'),
+// ישראל
+T('Maccabi_Tel_Aviv_B.C.','מכבי תל אביב','el'), T('Hapoel_Tel_Aviv_B.C.','הפועל תל אביב','el'),
+T('Hapoel_Jerusalem_B.C.','הפועל ירושלים','el'), T('Hapoel_Holon_B.C.','הפועל חולון','el'),
+];
+const USSPORT_ITEMS = [
+// NFL — כל 32 הקבוצות
+T('Arizona_Cardinals','אריזונה קרדינלס','nfl'), T('Atlanta_Falcons','אטלנטה פלקונס','nfl'),
+T('Baltimore_Ravens','בולטימור רייבנס','nfl'), T('Buffalo_Bills','באפלו בילס','nfl'),
+T('Carolina_Panthers','קרוליינה פנתרס','nfl'), T('Chicago_Bears','שיקגו ברס','nfl'),
+T('Cincinnati_Bengals','סינסינטי בנגלס','nfl'), T('Cleveland_Browns','קליבלנד בראונס','nfl'),
+T('Dallas_Cowboys','דאלאס קאובויס','nfl'), T('Denver_Broncos','דנבר ברונקוס','nfl'),
+T('Detroit_Lions','דטרויט ליונס','nfl'), T('Green_Bay_Packers','גרין ביי פאקרס','nfl'),
+T('Houston_Texans','יוסטון טקסנס','nfl'), T('Indianapolis_Colts','אינדיאנפוליס קולטס','nfl'),
+T('Jacksonville_Jaguars','ג׳קסונוויל ג׳גוארס','nfl'), T('Kansas_City_Chiefs','קנזס סיטי צ׳יפס','nfl'),
+T('Las_Vegas_Raiders','לאס וגאס ריידרס','nfl'), T('Los_Angeles_Chargers','לוס אנג׳לס צ׳רג׳רס','nfl'),
+T('Los_Angeles_Rams','לוס אנג׳לס ראמס','nfl'), T('Miami_Dolphins','מיאמי דולפינס','nfl'),
+T('Minnesota_Vikings','מינסוטה וייקינגס','nfl'), T('New_England_Patriots','ניו אינגלנד פטריוטס','nfl'),
+T('New_Orleans_Saints','ניו אורלינס סיינטס','nfl'), T('New_York_Giants','ניו יורק ג׳איינטס','nfl'),
+T('New_York_Jets','ניו יורק ג׳טס','nfl'), T('Philadelphia_Eagles','פילדלפיה איגלס','nfl'),
+T('Pittsburgh_Steelers','פיטסבורג סטילרס','nfl'), T('San_Francisco_49ers','סן פרנסיסקו 49','nfl'),
+T('Seattle_Seahawks','סיאטל סיהוקס','nfl'), T('Tampa_Bay_Buccaneers','טמפה ביי בקנירס','nfl'),
+T('Tennessee_Titans','טנסי טייטנס','nfl'), T('Washington_Commanders','וושינגטון קומנדרס','nfl'),
+// MLB — 20 קבוצות בולטות
+T('New_York_Yankees','ניו יורק יאנקיז','mlb'), T('New_York_Mets','ניו יורק מטס','mlb'),
+T('Boston_Red_Sox','בוסטון רד סוקס','mlb'), T('Los_Angeles_Dodgers','לוס אנג׳לס דודג׳רס','mlb'),
+T('San_Francisco_Giants','סן פרנסיסקו ג׳איינטס','mlb'), T('Chicago_Cubs','שיקגו קאבס','mlb'),
+T('Chicago_White_Sox','שיקגו וייט סוקס','mlb'), T('St._Louis_Cardinals','סנט לואיס קרדינלס','mlb'),
+T('Atlanta_Braves','אטלנטה ברייבס','mlb'), T('Houston_Astros','יוסטון אסטרוס','mlb'),
+T('Philadelphia_Phillies','פילדלפיה פיליס','mlb'), T('Texas_Rangers_(baseball)','טקסס ריינג׳רס','mlb'),
+T('Toronto_Blue_Jays','טורונטו בלו ג׳ייס','mlb'), T('Seattle_Mariners','סיאטל מרינרס','mlb'),
+T('San_Diego_Padres','סן דייגו פאדרס','mlb'), T('Baltimore_Orioles','בולטימור אוריולס','mlb'),
+T('Detroit_Tigers','דטרויט טייגרס','mlb'), T('Cleveland_Guardians','קליבלנד גרדיאנס','mlb'),
+T('Miami_Marlins','מיאמי מרלינס','mlb'), T('Milwaukee_Brewers','מילווקי ברוארס','mlb'),
+// פורמולה 1
+T('Scuderia_Ferrari','פרארי','f1','איזו קבוצת פורמולה 1 זו?'), T('McLaren_Racing','מקלארן','f1','איזו קבוצת פורמולה 1 זו?'),
+T('Red_Bull_Racing','רד בול','f1','איזו קבוצת פורמולה 1 זו?'), T('Mercedes-Benz_in_Formula_One','מרצדס','f1','איזו קבוצת פורמולה 1 זו?'),
+T('Williams_Racing','וויליאמס','f1','איזו קבוצת פורמולה 1 זו?'), T('Aston_Martin_in_Formula_One','אסטון מרטין','f1','איזו קבוצת פורמולה 1 זו?'),
+T('Alpine_F1_Team','אלפין','f1','איזו קבוצת פורמולה 1 זו?'), T('Haas_F1_Team','האס','f1','איזו קבוצת פורמולה 1 זו?'),
+];
+const SPORT_ITEMS = [...FOOT_ITEMS, ...BBALL_ITEMS, ...USSPORT_ITEMS];
+
+const QUIZZES = {
+  signs:  {name:'תמרורים',         ico:'🚦', color:'var(--c-signs)',  items:SIGN_ITEMS,  q:'מה משמעות התמרור?'},
+  flags:  {name:'דגלים',           ico:'🚩', color:'var(--c-flags)',  items:FLAG_ITEMS,  q:'לאיזו מדינה שייך הדגל?'},
+  caps:   {name:'בירות העולם',     ico:'🏛️', color:'var(--c-caps)',   items:CAP_ITEMS},
+  places: {name:'מקומות מפורסמים', ico:'🗺️', color:'var(--c-places)', items:PLACE_ITEMS},
+  cars:   {name:'סמלי רכבים',      ico:'🚗', color:'var(--c-cars)',   items:CAR_ITEMS,   q:'איזה מותג רכב זה?'},
+  syms:   {name:'סמלים וסימנים',   ico:'💲', color:'var(--c-syms)',   items:SYM_ITEMS},
+  acro:   {name:'ראשי תיבות',      ico:'🔤', color:'var(--c-acro)',   items:ACRO_ITEMS},
+  eng:    {name:'אנגלית ← עברית',  ico:'📚', color:'var(--c-eng)',    items:ENG_ITEMS},
+  engrev: {name:'עברית ← אנגלית',  ico:'🔁', color:'var(--c-eng)',    items:ENG_REV},
+  sport:  {name:'קבוצות ספורט',    ico:'🏆', color:'var(--c-foot)',   items:SPORT_ITEMS},
+};
+
+/* ============ SAFE STORAGE ============ */
+const mem = {};
+const store = {
+  get(k){ try{ return localStorage.getItem(k) ?? mem[k] ?? null }catch(e){ return mem[k] ?? null } },
+  set(k,v){ mem[k]=String(v); try{ localStorage.setItem(k,v) }catch(e){} }
+};
+const bestKey = (k,m)=>`quizbest_${k}_${m}`;
+
+/* ============ GAME STATE ============ */
+const N_QUESTIONS = 10, TIME_PER_Q = 15;
+let state = {};
+let timerInt = null;
+let pendingQuiz = null;
+const placeImgCache = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+const show = id => document.getElementById(id).classList.remove('hidden');
+const hide = id => document.getElementById(id).classList.add('hidden');
+
+/* ============ HOME ============ */
+function renderHome(){
+  const g = document.getElementById('quizGrid');
+  g.innerHTML = '';
+  for(const key in QUIZZES){
+    const q = QUIZZES[key];
+    const bR = store.get(bestKey(key,'relax')), bT = store.get(bestKey(key,'timer'));
+    const best = Math.max(bR?+bR:0, bT?+bT:0);
+    const btn = document.createElement('button');
+    btn.className = 'qcard';
+    btn.style.setProperty('--qc', q.color);
+    btn.innerHTML = `<div class="ico">${q.ico}</div><div class="nm">${q.name}</div>
+      <div class="best">${best>0 ? `שיא: <b>${best}</b>` : 'עוד לא שיחקת'}</div>`;
+    btn.onclick = ()=>openModal(key);
+    g.appendChild(btn);
+  }
+}
+
+function openModal(key){
+  pendingQuiz = key;
+  document.getElementById('modalIco').textContent = QUIZZES[key].ico;
+  document.getElementById('modalTitle').textContent = QUIZZES[key].name;
+  show('modeOverlay');
+}
+function closeModal(){ hide('modeOverlay'); }
+function pickMode(mode){ closeModal(); startQuiz(pendingQuiz, mode); }
+
+/* ============ PRELOADING ============ */
+function preloadImage(url, timeoutMs=6000){
+  return new Promise(res=>{
+    const img = new Image();
+    const t = setTimeout(()=>res(false), timeoutMs);
+    img.onload = ()=>{ clearTimeout(t); res(true); };
+    img.onerror = ()=>{ clearTimeout(t); res(false); };
+    img.src = url;
+  });
+}
+
+async function fetchPlaceImage(title){
+  if(title in placeImgCache) return placeImgCache[title];
+  try{
+    const r = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+    if(!r.ok) throw 0;
+    const d = await r.json();
+    const url = d.thumbnail?.source || null;
+    placeImgCache[title] = url;
+    return url;
+  }catch(e){ placeImgCache[title] = null; return null; }
+}
+
+async function prepareItems(key){
+  const quiz = QUIZZES[key];
+  const sample = shuffle(quiz.items).slice(0, N_QUESTIONS + 5); // כמה רזרביים
+  if(quiz.items[0]?.wiki){
+    await Promise.all(sample.map(async it=>{
+      const url = await fetchPlaceImage(it.wiki);
+      it.photo = (url && await preloadImage(url)) ? url : null; // וידוא שהתמונה באמת נטענת
+    }));
+    const withPhoto = sample.filter(it=>it.photo);
+    const rest = sample.filter(it=>!it.photo);
+    // במקומות מפורסמים יש אימוג'י כגיבוי; בקבוצות ספורט חובה לוגו
+    const usable = (key === 'places') ? [...withPhoto, ...rest] : withPhoto;
+    return (usable.length ? usable : withPhoto.concat(rest)).slice(0, N_QUESTIONS);
+  }
+  if(quiz.items[0]?.preload){
+    const results = await Promise.all(sample.map(it=>preloadImage(it.img)));
+    const good = sample.filter((it,i)=>results[i]);
+    return (good.length >= N_QUESTIONS ? good : sample).slice(0, N_QUESTIONS);
+  }
+  return sample.slice(0, N_QUESTIONS);
+}
+
+/* ============ QUIZ FLOW ============ */
+async function startQuiz(key, mode){
+  const quiz = QUIZZES[key];
+  hide('home'); hide('resultsScr'); hide('quiz'); show('loading');
+  window.scrollTo(0,0);
+  let items;
+  try{ items = await prepareItems(key); }
+  catch(e){ items = shuffle(quiz.items).slice(0, N_QUESTIONS); }
+  hide('loading');
+  state = {quizKey:key, mode, items, idx:0, score:0, right:0, streak:0, bestStreak:0};
+  show('quiz');
+  document.getElementById('stage').style.setProperty('--qc', quiz.color);
+  document.getElementById('progBar').style.setProperty('--qc', quiz.color);
+  document.getElementById('qTot').textContent = state.items.length;
+  document.getElementById('timerBox').classList.toggle('hidden', mode!=='timer');
+  showQuestion();
+}
+
+function distractors(quiz, correct, item){
+  if(item && item.d && item.d.length >= 3) return shuffle(item.d).slice(0,3);
+  if(item && item.grp){
+    const gpool = [...new Set(quiz.items.filter(i=>i.grp===item.grp).map(i=>i.a))].filter(a=>a!==correct);
+    if(gpool.length >= 3) return shuffle(gpool).slice(0,3);
+  }
+  const pool = [...new Set(quiz.items.map(i=>i.a))].filter(a=>a!==correct);
+  return shuffle(pool).slice(0,3);
+}
+
+function showQuestion(){
+  clearInterval(timerInt);
+  const quiz = QUIZZES[state.quizKey];
+  const item = state.items[state.idx];
+
+  document.getElementById('qNum').textContent = state.idx+1;
+  document.getElementById('score').textContent = state.score;
+  document.getElementById('streakPill').textContent = '🔥 ' + state.streak;
+  document.getElementById('progBar').style.width = (state.idx/state.items.length*100)+'%';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+
+  const vis = document.getElementById('visual');
+  if(item.wiki){
+    const cls = item.cls || 'photo';
+    if(item.photo){
+      vis.innerHTML = `<img class="${cls}" src="${item.photo}" alt="">`;
+      vis.querySelector('img').onerror = ()=>{ vis.innerHTML = item.emoji ? `<div class="bigmoji">${item.emoji}</div>` : ''; };
+    } else {
+      vis.innerHTML = item.emoji ? `<div class="bigmoji">${item.emoji}</div>` : '';
+    }
+  }
+  else if(item.img)   vis.innerHTML = `<img class="${item.cls||''}" src="${item.img}" alt="">`;
+  else if(item.glyph) vis.innerHTML = `<div class="glyph ${item.gcls||''}" style="color:${quiz.color}">${item.glyph}</div>`;
+  else                vis.innerHTML = '';
+
+  document.getElementById('qText').textContent = item.q || quiz.q || '';
+
+  const opts = shuffle([item.a, ...distractors(quiz, item.a, item)]);
+  const box = document.getElementById('answers');
+  box.innerHTML = '';
+  opts.forEach(opt=>{
+    const b = document.createElement('button');
+    b.className = 'ans';
+    b.textContent = opt;
+    b.onclick = ()=>answer(b, opt, item.a);
+    box.appendChild(b);
+  });
+
+  if(state.mode==='timer') startTimer();
+}
+
+function startTimer(){
+  let t = TIME_PER_Q;
+  const num = document.getElementById('timerNum');
+  const ring = document.getElementById('timerRing');
+  const box = document.getElementById('timerBox');
+  const CIRC = 138.2;
+  box.classList.remove('hurry');
+  num.textContent = t;
+  ring.style.strokeDashoffset = 0;
+  ring.style.stroke = '#FFC53D';
+  state.tLeft = t;
+  timerInt = setInterval(()=>{
+    t -= 0.1;
+    state.tLeft = t;
+    num.textContent = Math.ceil(t);
+    ring.style.strokeDashoffset = CIRC * (1 - t/TIME_PER_Q);
+    if(t <= 5){ box.classList.add('hurry'); ring.style.stroke = '#F26D78'; }
+    if(t <= 0){ clearInterval(timerInt); timeOut(); }
+  }, 100);
+}
+
+function timeOut(){
+  const item = state.items[state.idx];
+  document.querySelectorAll('.ans').forEach(b=>{
+    b.disabled = true;
+    if(b.textContent===item.a) b.classList.add('correct'); else b.classList.add('dim');
+  });
+  state.streak = 0;
+  const fb = document.getElementById('feedback');
+  fb.textContent = '⏰ נגמר הזמן!';
+  fb.classList.add('bad');
+  setTimeout(nextQuestion, 1600);
+}
+
+function answer(btn, chosen, correct){
+  clearInterval(timerInt);
+  document.querySelectorAll('.ans').forEach(b=>{
+    b.disabled = true;
+    if(b.textContent===correct) b.classList.add('correct');
+    else if(b===btn) b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+  const fb = document.getElementById('feedback');
+  if(chosen===correct){
+    let pts = 10;
+    if(state.mode==='timer') pts += Math.max(0, Math.round(state.tLeft/3)); // עד +5 בונוס מהירות
+    state.score += pts;
+    state.right++;
+    state.streak++;
+    state.bestStreak = Math.max(state.bestStreak, state.streak);
+    fb.textContent = state.streak>=3 ? `🔥 מדהים! +${pts} (רצף ${state.streak})` : `✅ נכון! +${pts}`;
+    fb.classList.add('ok');
+  } else {
+    state.streak = 0;
+    fb.textContent = `❌ התשובה הנכונה: ${correct}`;
+    fb.classList.add('bad');
+  }
+  document.getElementById('score').textContent = state.score;
+  document.getElementById('streakPill').textContent = '🔥 ' + state.streak;
+  setTimeout(nextQuestion, chosen===correct ? 1000 : 1900);
+}
+
+function nextQuestion(){
+  state.idx++;
+  if(state.idx >= state.items.length) showResults();
+  else showQuestion();
+}
+
+/* ============ RESULTS ============ */
+function showResults(){
+  clearInterval(timerInt);
+  hide('quiz'); show('resultsScr');
+  const n = state.items.length, r = state.right;
+  const pct = r/n;
+  let emoji, title;
+  if(pct===1){ emoji='🏆'; title='מושלם!!'; }
+  else if(pct>=0.8){ emoji='🎉'; title='כל הכבוד!'; }
+  else if(pct>=0.6){ emoji='😎'; title='יפה מאוד!'; }
+  else if(pct>=0.4){ emoji='🙂'; title='לא רע!'; }
+  else { emoji='💪'; title='ננסה שוב?'; }
+  document.getElementById('resEmoji').textContent = emoji;
+  document.getElementById('resTitle').textContent = title;
+  document.getElementById('resScore').textContent = state.score;
+  document.getElementById('resRight').textContent = `${r} מתוך ${n} נכונות · רצף שיא ${state.bestStreak}`;
+
+  const bk = bestKey(state.quizKey, state.mode);
+  const prev = +(store.get(bk) || 0);
+  const bestEl = document.getElementById('resBest');
+  if(state.score > prev){
+    store.set(bk, state.score);
+    bestEl.innerHTML = '<div class="newbest">⭐ שיא חדש! ⭐</div>';
+  } else {
+    bestEl.innerHTML = `<div style="color:var(--muted); margin-top:10px">השיא שלך: ${prev}</div>`;
+  }
+  if(pct>=0.8) confetti();
+  window.scrollTo(0,0);
+}
+
+function confetti(){
+  const colors = ['#FFC53D','#E5484D','#3E63DD','#30A46C','#F76B15','#8E4EC6','#12A594','#D6409F'];
+  for(let i=0;i<70;i++){
+    const p = document.createElement('div');
+    p.className = 'confetti';
+    p.style.left = Math.random()*100+'vw';
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDuration = (2+Math.random()*2.5)+'s';
+    p.style.animationDelay = (Math.random()*0.8)+'s';
+    p.style.borderRadius = Math.random()>0.5 ? '50%' : '2px';
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(), 5500);
+  }
+}
+
+function exitQuiz(){ clearInterval(timerInt); goHome(); }
+function goHome(){
+  hide('quiz'); hide('resultsScr'); hide('loading');
+  show('home');
+  renderHome();
+  window.scrollTo(0,0);
+}
+
+renderHome();
+</script>
+</body>
+</html>
