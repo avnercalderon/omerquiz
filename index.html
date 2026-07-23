@@ -1648,26 +1648,27 @@ AN('Tarantula','טרנטולה','rep'), AN('Scorpion','עקרב','rep'), AN('Man
 ];
 
 /* ============ לוגו אפליקציות, משחקים ותוכנות 📱 ============ */
-const AP = (wiki,a,grp)=>({wiki, a, grp, cls:'logo', q: grp==='game'?'איזה משחק זה?':(grp==='soft'?'איזו תוכנה זו?':'איזו אפליקציה זו?')});
+const favURL = d => `https://www.google.com/s2/favicons?domain=${d}&sz=128`;
+const AP = (wiki,a,grp,dom)=>({wiki, a, grp, dom, cls:'logo', q: grp==='game'?'איזה משחק זה?':(grp==='soft'?'איזו תוכנה זו?':'איזו אפליקציה זו?')});
 const APP_ITEMS = [
-AP('WhatsApp','וואטסאפ','app'), AP('Instagram','אינסטגרם','app'), AP('TikTok','טיקטוק','app'),
-AP('YouTube','יוטיוב','app'), AP('Facebook','פייסבוק','app'), AP('Facebook_Messenger','מסנג׳ר','app'),
-AP('Snapchat','סנאפצ׳ט','app'), AP('Telegram_(software)','טלגרם','app'), AP('Signal_(software)','סיגנל','app'),
-AP('Twitter','טוויטר / X','app'), AP('Gmail','ג׳ימייל','app'), AP('Google_Maps','גוגל מפות','app'),
-AP('Waze','ווייז','app'), AP('Google_Chrome','גוגל כרום','app'), AP('Safari_(web_browser)','ספארי','app'),
-AP('Spotify','ספוטיפיי','app'), AP('Netflix','נטפליקס','app'), AP('Disney+','דיסני פלוס','app'),
-AP('Zoom_(software)','זום','app'), AP('Skype','סקייפ','app'), AP('Discord','דיסקורד','app'),
-AP('Slack_(software)','סלאק','app'), AP('Uber','אובר','app'), AP('Airbnb','איירבנב','app'),
-AP('Booking.com','בוקינג','app'), AP('PayPal','פייפאל','app'), AP('Moovit','מוביט','app'),
-AP('Gett','גט','app'), AP('Wolt','וולט','app'), AP('Shazam_(application)','שאזאם','app'),
-AP('Duolingo','דואולינגו','app'), AP('Pinterest','פינטרסט','app'), AP('LinkedIn','לינקדאין','app'),
-AP('Reddit','רדיט','app'), AP('Twitch_(service)','טוויץ׳','app'), AP('Amazon_(company)','אמזון','app'),
-AP('eBay','איביי','app'), AP('AliExpress','עליאקספרס','app'), AP('Shein','שיין','app'),
-AP('Google_Translate','גוגל תרגום','app'), AP('Google_Drive','גוגל דרייב','app'),
-AP('Apple_Music','אפל מיוזיק','app'), AP('App_Store_(Apple)','אפ סטור','app'), AP('FaceTime','פייסטיים','app'),
-AP('CapCut','קאפקאט','app'), AP('Canva','קנבה','app'), AP('ChatGPT','צ׳אט ג׳י-פי-טי','app'),
-AP('Claude_(language_model)','קלוד','app'), AP('Gemini_(chatbot)','ג׳מיני','app'),
-AP('Minecraft','מיינקראפט','game'), AP('Fortnite','פורטנייט','game'), AP('Roblox','רובלוקס','game'),
+AP('WhatsApp','וואטסאפ','app','whatsapp.com'), AP('Instagram','אינסטגרם','app','instagram.com'), AP('TikTok','טיקטוק','app','tiktok.com'),
+AP('YouTube','יוטיוב','app','youtube.com'), AP('Facebook','פייסבוק','app','facebook.com'), AP('Facebook_Messenger','מסנג׳ר','app','messenger.com'),
+AP('Snapchat','סנאפצ׳ט','app','snapchat.com'), AP('Telegram_(software)','טלגרם','app','telegram.org'), AP('Signal_(software)','סיגנל','app','signal.org'),
+AP('Twitter','טוויטר / X','app','x.com'), AP('Gmail','ג׳ימייל','app','gmail.com'), AP('Google_Maps','גוגל מפות','app','maps.google.com'),
+AP('Waze','ווייז','app','waze.com'), AP('Google_Chrome','גוגל כרום','app'), AP('Safari_(web_browser)','ספארי','app'),
+AP('Spotify','ספוטיפיי','app','spotify.com'), AP('Netflix','נטפליקס','app','netflix.com'), AP('Disney+','דיסני פלוס','app','disneyplus.com'),
+AP('Zoom_(software)','זום','app','zoom.us'), AP('Skype','סקייפ','app','skype.com'), AP('Discord','דיסקורד','app','discord.com'),
+AP('Slack_(software)','סלאק','app','slack.com'), AP('Uber','אובר','app','uber.com'), AP('Airbnb','איירבנב','app','airbnb.com'),
+AP('Booking.com','בוקינג','app','booking.com'), AP('PayPal','פייפאל','app','paypal.com'), AP('Moovit','מוביט','app','moovit.com'),
+AP('Gett','גט','app','gett.com'), AP('Wolt','וולט','app','wolt.com'), AP('Shazam_(application)','שאזאם','app','shazam.com'),
+AP('Duolingo','דואולינגו','app','duolingo.com'), AP('Pinterest','פינטרסט','app','pinterest.com'), AP('LinkedIn','לינקדאין','app','linkedin.com'),
+AP('Reddit','רדיט','app','reddit.com'), AP('Twitch_(service)','טוויץ׳','app','twitch.tv'), AP('Amazon_(company)','אמזון','app','amazon.com'),
+AP('eBay','איביי','app','ebay.com'), AP('AliExpress','עליאקספרס','app','aliexpress.com'), AP('Shein','שיין','app','shein.com'),
+AP('Google_Translate','גוגל תרגום','app','translate.google.com'), AP('Google_Drive','גוגל דרייב','app','drive.google.com'),
+AP('Apple_Music','אפל מיוזיק','app','music.apple.com'), AP('App_Store_(Apple)','אפ סטור','app'), AP('FaceTime','פייסטיים','app'),
+AP('CapCut','קאפקאט','app','capcut.com'), AP('Canva','קנבה','app','canva.com'), AP('ChatGPT','צ׳אט ג׳י-פי-טי','app','chatgpt.com'),
+AP('Claude_(language_model)','קלוד','app','claude.ai'), AP('Gemini_(chatbot)','ג׳מיני','app','gemini.google.com'),
+AP('Minecraft','מיינקראפט','game'), AP('Fortnite','פורטנייט','game'), AP('Roblox','רובלוקס','game','roblox.com'),
 AP('Among_Us','אמונג אס','game'), AP('Candy_Crush_Saga','קנדי קראש','game'),
 AP('Clash_of_Clans','קלאש אוף קלאנס','game'), AP('Clash_Royale','קלאש רויאל','game'),
 AP('Brawl_Stars','בראול סטארס','game'), AP('Subway_Surfers','סאבוויי סרפרס','game'),
@@ -1682,19 +1683,19 @@ AP('Rocket_League','רוקט ליג','game'), AP('Fall_Guys','פול גייז','
 AP('Genshin_Impact','גנשין אימפקט','game'), AP('Hay_Day','היי דיי','game'),
 AP('Plants_vs._Zombies','צמחים נגד זומבים','game'), AP('Crossy_Road','קרוסי רואד','game'),
 AP('Geometry_Dash','ג׳יאומטרי דאש','game'), AP('2048_(video_game)','2048','game'),
-AP('Wordle','וורדל','game'), AP('Chess.com','צ׳ס.קום','game'), AP('Tetris','טטריס','game'),
+AP('Wordle','וורדל','game'), AP('Chess.com','צ׳ס.קום','game','chess.com'), AP('Tetris','טטריס','game'),
 AP('Pac-Man','פקמן','game'), AP('Sonic_the_Hedgehog','סוניק','game'),
 AP('Microsoft_Word','וורד','soft'), AP('Microsoft_Excel','אקסל','soft'),
 AP('Microsoft_PowerPoint','פאוורפוינט','soft'), AP('Microsoft_Teams','טימס','soft'),
 AP('Microsoft_Outlook','אאוטלוק','soft'), AP('Microsoft_Windows','ווינדוס','soft'),
 AP('Adobe_Photoshop','פוטושופ','soft'), AP('Adobe_Illustrator','אילוסטרייטור','soft'),
 AP('Adobe_Acrobat','אקרובט (PDF)','soft'), AP('Visual_Studio_Code','VS Code','soft'),
-AP('GitHub','גיטהאב','soft'), AP('Python_(programming_language)','פייתון','soft'),
+AP('GitHub','גיטהאב','soft','github.com'), AP('Python_(programming_language)','פייתון','soft'),
 AP('Firefox','פיירפוקס','soft'), AP('Microsoft_Edge','אדג׳','soft'),
-AP('Opera_(web_browser)','אופרה','soft'), AP('VLC_media_player','VLC','soft'),
-AP('Dropbox','דרופבוקס','soft'), AP('Figma','פיגמה','soft'),
-AP('Google_Docs','גוגל דוקס','soft'), AP('Google_Sheets','גוגל שיטס','soft'),
-AP('Google_Earth','גוגל ארת׳','soft'), AP('Android_(operating_system)','אנדרואיד','soft'),
+AP('Opera_(web_browser)','אופרה','soft'), AP('VLC_media_player','VLC','soft','videolan.org'),
+AP('Dropbox','דרופבוקס','soft','dropbox.com'), AP('Figma','פיגמה','soft','figma.com'),
+AP('Google_Docs','גוגל דוקס','soft','docs.google.com'), AP('Google_Sheets','גוגל שיטס','soft','sheets.google.com'),
+AP('Google_Earth','גוגל ארת׳','soft','earth.google.com'), AP('Android_(operating_system)','אנדרואיד','soft'),
 AP('Linux','לינוקס','soft'),
 // משחקים — הרחבה גדולה
 AP('Flappy_Bird','פלאפי בירד','game'), AP('Hill_Climb_Racing','היל קליימב רייסינג','game'),
@@ -1708,17 +1709,17 @@ AP('Toca_Boca','טוקה בוקה','game'), AP('Super_Smash_Bros.','סופר ס�
 AP('Animal_Crossing','אנימל קרוסינג','game'), AP('Splatoon','ספלטון','game'),
 AP('The_Sims','הסימס','game'), AP('Apex_Legends','אייפקס לג׳נדס','game'),
 AP('PUBG:_Battlegrounds','פאבג׳י','game'), AP('Garena_Free_Fire','פרי פייר','game'),
-AP('Boom_Beach','בום ביץ׳','game'), AP('Coin_Master','קוין מאסטר','game'),
+AP('Boom_Beach','בום ביץ׳','game'), AP('Coin_Master','קוין מאסטר','game','coinmaster.com'),
 AP('Gran_Turismo','גראן טוריסמו','game'), AP('Need_for_Speed','נִיד פור ספיד','game'),
 AP('Asphalt_9:_Legends','אספלט 9','game'), AP('Street_Fighter','סטריט פייטר','game'),
 AP('Space_Invaders','ספייס אינביידרס','game'), AP('Donkey_Kong','דונקי קונג','game'),
 AP('My_Talking_Tom','טוקינג טום','game'), AP('Hearthstone','הארתסטון','game'),
 AP('Plague_Inc.','פלייג אינק','game'),
 // אפליקציות — השלמות
-AP('Google_Photos','גוגל תמונות','app'), AP('Google_Meet','גוגל מיט','app'),
-AP('Strava','סטראבה','app'), AP('Tripadvisor','טריפאדוויזור','app'),
-AP('Kahoot!','קאהוט','app'), AP('Quizlet','קוויזלט','app'),
-AP('Photomath','פוטומאת׳','app'), AP('Google_Classroom','גוגל קלאסרום','app'),
+AP('Google_Photos','גוגל תמונות','app','photos.google.com'), AP('Google_Meet','גוגל מיט','app','meet.google.com'),
+AP('Strava','סטראבה','app','strava.com'), AP('Tripadvisor','טריפאדוויזור','app','tripadvisor.com'),
+AP('Kahoot!','קאהוט','app','kahoot.com'), AP('Quizlet','קוויזלט','app','quizlet.com'),
+AP('Photomath','פוטומאת׳','app','photomath.com'), AP('Google_Classroom','גוגל קלאסרום','app','classroom.google.com'),
 // תוכנות — השלמות
 AP('Scratch_(programming_language)','סקראץ׳','soft'), AP('Blender_(software)','בלנדר','soft'),
 AP('Unity_(game_engine)','יוניטי','soft'), AP('OBS_Studio','OBS','soft'),
@@ -1835,7 +1836,7 @@ async function prepareItems(key){
   const sample = shuffle(quiz.items).slice(0, N_QUESTIONS + 5); // כמה רזרביים
   if(quiz.items[0]?.wiki){
     await Promise.all(sample.map(async it=>{
-      const url = await fetchPlaceImage(it.wiki);
+      const url = it.dom ? favURL(it.dom) : await fetchPlaceImage(it.wiki);
       it.photo = (url && await preloadImage(url)) ? url : null; // וידוא שהתמונה באמת נטענת
     }));
     const withPhoto = sample.filter(it=>it.photo);
