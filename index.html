@@ -1648,81 +1648,91 @@ AN('Tarantula','טרנטולה','rep'), AN('Scorpion','עקרב','rep'), AN('Man
 ];
 
 /* ============ לוגו אפליקציות, משחקים ותוכנות 📱 ============ */
-const favURL = d => `https://www.google.com/s2/favicons?domain=${d}&sz=128`;
-const AP = (wiki,a,grp,dom)=>({wiki, a, grp, dom, cls:'logo', q: grp==='game'?'איזה משחק זה?':(grp==='soft'?'איזו תוכנה זו?':'איזו אפליקציה זו?')});
+const favURL = d => `https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${d}&size=128`;
+const cfURL = f => `https://commons.wikimedia.org/wiki/Special:FilePath/${f}?width=256`;
+const _itCache = {};
+let _itSeq = 0;
+function _itCall(params){ // קריאת JSONP אחת ל-API של חנות אפל
+  return new Promise(res=>{
+    const cb = '__it' + (++_itSeq);
+    const s = document.createElement('script');
+    const done = url => { try{ delete window[cb]; s.remove(); }catch(e){} res(url); };
+    window[cb] = d => {
+      const r = d && d.results && d.results[0];
+      done(r ? (r.artworkUrl512 || (r.artworkUrl100||'').replace('100x100','512x512') || null) : null);
+    };
+    s.onerror = ()=>done(null);
+    s.src = `https://itunes.apple.com/${params}&callback=${cb}`;
+    document.body.appendChild(s);
+    setTimeout(()=>done(null), 6000);
+  });
+}
+async function _itMulti(build){ // ניסיון בחנות ישראל, ואז ארה"ב, ואז בריטניה
+  for(const c of ['il','us','gb']){
+    const url = await _itCall(build(c));
+    if(url) return url;
+  }
+  return null;
+}
+function itunesArt(id){ // אייקון רשמי לפי מזהה אפליקציה
+  return _itCache['id'+id] ??= _itMulti(c=>`lookup?id=${id}&country=${c}`);
+}
+function itSearch(term){ // אייקון רשמי לפי חיפוש שם בחנות
+  return _itCache['q'+term] ??= _itMulti(c=>`search?term=${encodeURIComponent(term)}&entity=software&limit=1&country=${c}`);
+}
+const AP = (wiki,a,grp,dom,icon)=>({wiki, a, grp, dom, icon, cls:'logo', q: grp==='game'?'איזה משחק זה?':(grp==='soft'?'איזו תוכנה זו?':(grp==='ret'?'איזו אפליקציה מהעבר זו?':'איזו אפליקציה זו?'))});
 const APP_ITEMS = [
 AP('WhatsApp','וואטסאפ','app','whatsapp.com'), AP('Instagram','אינסטגרם','app','instagram.com'), AP('TikTok','טיקטוק','app','tiktok.com'),
 AP('YouTube','יוטיוב','app','youtube.com'), AP('Facebook','פייסבוק','app','facebook.com'), AP('Facebook_Messenger','מסנג׳ר','app','messenger.com'),
 AP('Snapchat','סנאפצ׳ט','app','snapchat.com'), AP('Telegram_(software)','טלגרם','app','telegram.org'), AP('Signal_(software)','סיגנל','app','signal.org'),
-AP('Twitter','טוויטר / X','app','x.com'), AP('Gmail','ג׳ימייל','app','gmail.com'), AP('Google_Maps','גוגל מפות','app','maps.google.com'),
+AP('Twitter','טוויטר / X','app','x.com'), AP('Gmail','ג׳ימייל','app',null,cfURL('Gmail_icon_(2020).svg')), AP('Google_Maps','גוגל מפות','app','maps.google.com'),
 AP('Waze','ווייז','app','waze.com'), AP('Google_Chrome','גוגל כרום','app'), AP('Safari_(web_browser)','ספארי','app'),
 AP('Spotify','ספוטיפיי','app','spotify.com'), AP('Netflix','נטפליקס','app','netflix.com'), AP('Disney+','דיסני פלוס','app','disneyplus.com'),
 AP('Zoom_(software)','זום','app','zoom.us'), AP('Skype','סקייפ','app','skype.com'), AP('Discord','דיסקורד','app','discord.com'),
 AP('Slack_(software)','סלאק','app','slack.com'), AP('Uber','אובר','app','uber.com'), AP('Airbnb','איירבנב','app','airbnb.com'),
 AP('Booking.com','בוקינג','app','booking.com'), AP('PayPal','פייפאל','app','paypal.com'), AP('Moovit','מוביט','app','moovit.com'),
-AP('Gett','גט','app','gett.com'), AP('Wolt','וולט','app','wolt.com'), AP('Shazam_(application)','שאזאם','app','shazam.com'),
+Object.assign(AP('Gett','גט','app'), {itid:449655162}), AP('Wolt','וולט','app','wolt.com'), AP('Shazam_(application)','שאזאם','app','shazam.com'),
 AP('Duolingo','דואולינגו','app','duolingo.com'), AP('Pinterest','פינטרסט','app','pinterest.com'), AP('LinkedIn','לינקדאין','app','linkedin.com'),
 AP('Reddit','רדיט','app','reddit.com'), AP('Twitch_(service)','טוויץ׳','app','twitch.tv'), AP('Amazon_(company)','אמזון','app','amazon.com'),
 AP('eBay','איביי','app','ebay.com'), AP('AliExpress','עליאקספרס','app','aliexpress.com'), AP('Shein','שיין','app','shein.com'),
 AP('Google_Translate','גוגל תרגום','app','translate.google.com'), AP('Google_Drive','גוגל דרייב','app','drive.google.com'),
-AP('Apple_Music','אפל מיוזיק','app','music.apple.com'), AP('App_Store_(Apple)','אפ סטור','app'), AP('FaceTime','פייסטיים','app'),
-AP('CapCut','קאפקאט','app','capcut.com'), AP('Canva','קנבה','app','canva.com'), AP('ChatGPT','צ׳אט ג׳י-פי-טי','app','chatgpt.com'),
+AP('Apple_Music','אפל מיוזיק','app','music.apple.com'), AP('App_Store_(Apple)','אפ סטור','app','apps.apple.com'), AP('FaceTime','פייסטיים','app'),
+AP('CapCut','קאפקאט','app','capcut.com'), AP('Photos_(Apple)','תמונות (אייפון)','app'), AP('Mashov','משו״ב (בית ספר)','app','web.mashov.info'),
+AP('Etsy','אטסי','app','etsy.com'), AP('Viber','וייבר','app','viber.com'),
+AP('Canva','קנבה','app','canva.com'), AP('ChatGPT','צ׳אט ג׳י-פי-טי','app','chatgpt.com'),
 AP('Claude_(language_model)','קלוד','app','claude.ai'), AP('Gemini_(chatbot)','ג׳מיני','app','gemini.google.com'),
-AP('Minecraft','מיינקראפט','game'), AP('Fortnite','פורטנייט','game'), AP('Roblox','רובלוקס','game','roblox.com'),
-AP('Among_Us','אמונג אס','game'), AP('Candy_Crush_Saga','קנדי קראש','game'),
-AP('Clash_of_Clans','קלאש אוף קלאנס','game'), AP('Clash_Royale','קלאש רויאל','game'),
-AP('Brawl_Stars','בראול סטארס','game'), AP('Subway_Surfers','סאבוויי סרפרס','game'),
-AP('Temple_Run','טמפל ראן','game'), AP('Angry_Birds','אנגרי בירדס','game'),
-AP('Fruit_Ninja','פרוט נינג׳ה','game'), AP('Pokémon_Go','פוקימון גו','game'),
-AP('Super_Mario','סופר מריו','game'), AP('Mario_Kart','מריו קארט','game'),
-AP('The_Legend_of_Zelda','זלדה','game'), AP('FIFA_(video_game_series)','פיפ״א','game'),
-AP('NBA_2K','NBA 2K','game'), AP('Call_of_Duty','קול אוף דיוטי','game'),
-AP('Counter-Strike','קאונטר סטרייק','game'), AP('League_of_Legends','ליג אוף לג׳נדס','game'),
-AP('Valorant','ולורנט','game'), AP('Overwatch_(video_game)','אוברווטש','game'),
-AP('Rocket_League','רוקט ליג','game'), AP('Fall_Guys','פול גייז','game'),
-AP('Genshin_Impact','גנשין אימפקט','game'), AP('Hay_Day','היי דיי','game'),
-AP('Plants_vs._Zombies','צמחים נגד זומבים','game'), AP('Crossy_Road','קרוסי רואד','game'),
-AP('Geometry_Dash','ג׳יאומטרי דאש','game'), AP('2048_(video_game)','2048','game'),
-AP('Wordle','וורדל','game'), AP('Chess.com','צ׳ס.קום','game','chess.com'), AP('Tetris','טטריס','game'),
-AP('Pac-Man','פקמן','game'), AP('Sonic_the_Hedgehog','סוניק','game'),
-AP('Microsoft_Word','וורד','soft'), AP('Microsoft_Excel','אקסל','soft'),
-AP('Microsoft_PowerPoint','פאוורפוינט','soft'), AP('Microsoft_Teams','טימס','soft'),
-AP('Microsoft_Outlook','אאוטלוק','soft'), AP('Microsoft_Windows','ווינדוס','soft'),
-AP('Adobe_Photoshop','פוטושופ','soft'), AP('Adobe_Illustrator','אילוסטרייטור','soft'),
+Object.assign(AP('Minecraft','מיינקראפט','game'), {itq:'Minecraft'}), AP('Fortnite','פורטנייט','game','fortnite.com'), Object.assign(AP('Roblox','רובלוקס','game'), {itq:'Roblox'}), Object.assign(AP('Among_Us','אמונג אס','game'), {itq:'Among Us!'}), Object.assign(AP('Candy_Crush_Saga','קנדי קראש','game'), {itq:'Candy Crush Saga'}), Object.assign(AP('Clash_of_Clans','קלאש אוף קלאנס','game'), {itid:529479190}), Object.assign(AP('Clash_Royale','קלאש רויאל','game'), {itid:1053012308}), Object.assign(AP('Brawl_Stars','בראול סטארס','game'), {itid:1229016807}), Object.assign(AP('Subway_Surfers','סאבוויי סרפרס','game'), {itq:'Subway Surfers'}), Object.assign(AP('Temple_Run','טמפל ראן','game'), {itq:'Temple Run'}), Object.assign(AP('Fruit_Ninja','פרוט נינג׳ה','game'), {itid:403858572}), Object.assign(AP('Pokémon_Go','פוקימון גו','game'), {itq:'Pokemon GO'}), AP('Super_Mario','סופר מריו','game'), AP('The_Legend_of_Zelda','זלדה','game'), Object.assign(AP('FIFA_(video_game_series)','פיפ״א','game'), {itq:'EA SPORTS FC Mobile'}), Object.assign(AP('NBA_2K','NBA 2K','game'), {itq:'NBA 2K Mobile'}), AP('Counter-Strike','קאונטר סטרייק','game','counter-strike.net'), AP('League_of_Legends','ליג אוף לג׳נדס','game'),
+AP('Valorant','ולורנט','game'), AP('Overwatch_(video_game)','אוברווטש','game','overwatch.blizzard.com'), AP('Rocket_League','רוקט ליג','game'), Object.assign(AP('Genshin_Impact','גנשין אימפקט','game'), {itq:'Genshin Impact'}), Object.assign(AP('Hay_Day','היי דיי','game'), {itq:'Hay Day'}), Object.assign(AP('Plants_vs._Zombies','צמחים נגד זומבים','game'), {itq:'Plants vs. Zombies'}), Object.assign(AP('Crossy_Road','קרוסי רואד','game'), {itq:'Crossy Road'}), Object.assign(AP('2048_(video_game)','2048','game'), {itq:'2048'}), Object.assign(AP('Chess.com','צ׳ס.קום','game'), {itq:'Chess.com'}), Object.assign(AP('Tetris','טטריס','game'), {itq:'Tetris'}), Object.assign(AP('Pac-Man','פקמן','game'), {itq:'PAC-MAN'}), Object.assign(AP('Sonic_the_Hedgehog','סוניק','game'), {itq:'Sonic Dash'}), AP('Microsoft_Word','וורד','soft',null,cfURL('Microsoft_Office_Word_(2019–present).svg')), AP('Microsoft_Excel','אקסל','soft'),
+AP('Microsoft_PowerPoint','פאוורפוינט','soft',null,cfURL('Microsoft_Office_PowerPoint_(2019–present).svg')), AP('Microsoft_Teams','טימס','soft'),
+AP('Microsoft_Outlook','אאוטלוק','soft'), AP('Microsoft_Windows','ווינדוס','soft',null,cfURL('Windows_logo_-_2021.svg')), AP('Adobe_Photoshop','פוטושופ','soft'), AP('Adobe_Illustrator','אילוסטרייטור','soft'),
 AP('Adobe_Acrobat','אקרובט (PDF)','soft'), AP('Visual_Studio_Code','VS Code','soft'),
 AP('GitHub','גיטהאב','soft','github.com'), AP('Python_(programming_language)','פייתון','soft'),
 AP('Firefox','פיירפוקס','soft'), AP('Microsoft_Edge','אדג׳','soft'),
-AP('Opera_(web_browser)','אופרה','soft'), AP('VLC_media_player','VLC','soft','videolan.org'),
-AP('Dropbox','דרופבוקס','soft','dropbox.com'), AP('Figma','פיגמה','soft','figma.com'),
-AP('Google_Docs','גוגל דוקס','soft','docs.google.com'), AP('Google_Sheets','גוגל שיטס','soft','sheets.google.com'),
-AP('Google_Earth','גוגל ארת׳','soft','earth.google.com'), AP('Android_(operating_system)','אנדרואיד','soft'),
-AP('Linux','לינוקס','soft'),
+AP('Opera_(web_browser)','אופרה','soft'), AP('VLC_media_player','VLC','soft',null,cfURL('VLC_Icon.svg')), AP('Dropbox','דרופבוקס','soft','dropbox.com'), AP('Figma','פיגמה','soft','figma.com'),
+AP('Google_Docs','גוגל דוקס','soft',null,cfURL('Google_Docs_2020_Logo.svg')), AP('Google_Sheets','גוגל שיטס','soft',null,cfURL('Google_Sheets_2020_Logo.svg')), AP('Google_Earth','גוגל ארת׳','soft','earth.google.com'), AP('Android_(operating_system)','אנדרואיד','soft',null,cfURL('Android_robot.svg')), AP('Linux','לינוקס','soft'),
 // משחקים — הרחבה גדולה
-AP('Flappy_Bird','פלאפי בירד','game'), AP('Hill_Climb_Racing','היל קליימב רייסינג','game'),
-AP('8_Ball_Pool','8 בול פול','game'), AP('Piano_Tiles','פיאנו טיילס','game'),
-AP('Cut_the_Rope','קאט דה רופ','game'), AP('Doodle_Jump','דודל ג׳אמפ','game'),
-AP('Jetpack_Joyride','ג׳טפאק ג׳ויירייד','game'), AP('Monument_Valley_(video_game)','מוניומנט ואלי','game'),
-AP('Stardew_Valley','סטארדיו ואלי','game'), AP('Terraria','טרריה','game'),
-AP('Slither.io','סלית׳ר','game'), AP('Agar.io','אגאר','game'),
-AP('Bloons_Tower_Defense','בלונס','game'), AP('Stumble_Guys','סטמבל גייז','game'),
-AP('Toca_Boca','טוקה בוקה','game'), AP('Super_Smash_Bros.','סופר סמאש ברוס','game'),
-AP('Animal_Crossing','אנימל קרוסינג','game'), AP('Splatoon','ספלטון','game'),
-AP('The_Sims','הסימס','game'), AP('Apex_Legends','אייפקס לג׳נדס','game'),
-AP('PUBG:_Battlegrounds','פאבג׳י','game'), AP('Garena_Free_Fire','פרי פייר','game'),
-AP('Boom_Beach','בום ביץ׳','game'), AP('Coin_Master','קוין מאסטר','game','coinmaster.com'),
-AP('Gran_Turismo','גראן טוריסמו','game'), AP('Need_for_Speed','נִיד פור ספיד','game'),
-AP('Asphalt_9:_Legends','אספלט 9','game'), AP('Street_Fighter','סטריט פייטר','game'),
-AP('Space_Invaders','ספייס אינביידרס','game'), AP('Donkey_Kong','דונקי קונג','game'),
-AP('My_Talking_Tom','טוקינג טום','game'), AP('Hearthstone','הארתסטון','game'),
-AP('Plague_Inc.','פלייג אינק','game'),
-// אפליקציות — השלמות
+AP('Flappy_Bird','פלאפי בירד','game'), Object.assign(AP('8_Ball_Pool','8 בול פול','game'), {itq:'8 Ball Pool'}), Object.assign(AP('Piano_Tiles','פיאנו טיילס','game'), {itq:'Piano Tiles 2'}), Object.assign(AP('Cut_the_Rope','קאט דה רופ','game'), {itq:'Cut the Rope'}), Object.assign(AP('Doodle_Jump','דודל ג׳אמפ','game'), {itq:'Doodle Jump'}), Object.assign(AP('Jetpack_Joyride','ג׳טפאק ג׳ויירייד','game'), {itq:'Jetpack Joyride'}), Object.assign(AP('Monument_Valley_(video_game)','מוניומנט ואלי','game'), {itq:'Monument Valley'}), Object.assign(AP('Stardew_Valley','סטארדיו ואלי','game'), {itq:'Stardew Valley'}), Object.assign(AP('Terraria','טרריה','game'), {itq:'Terraria'}), Object.assign(AP('Slither.io','סלית׳ר','game'), {itq:'Slither.io'}), Object.assign(AP('Agar.io','אגאר','game'), {itq:'Agar.io'}), Object.assign(AP('Bloons_Tower_Defense','בלונס','game'), {itq:'Bloons TD 6'}), Object.assign(AP('Stumble_Guys','סטמבל גייז','game'), {itq:'Stumble Guys'}), Object.assign(AP('Toca_Boca','טוקה בוקה','game'), {itq:'Toca Boca World'}), Object.assign(AP('Animal_Crossing','אנימל קרוסינג','game'), {itq:'Animal Crossing Pocket Camp'}), AP('Splatoon','ספלטון','game'),
+Object.assign(AP('The_Sims','הסימס','game'), {itq:'The Sims Mobile'}), AP('Apex_Legends','אייפקס לג׳נדס','game'),
+Object.assign(AP('PUBG:_Battlegrounds','פאבג׳י','game'), {itq:'PUBG MOBILE'}), Object.assign(AP('Garena_Free_Fire','פרי פייר','game'), {itq:'Free Fire'}), Object.assign(AP('Boom_Beach','בום ביץ׳','game'), {itq:'Boom Beach'}), AP('Gran_Turismo','גראן טוריסמו','game','gran-turismo.com'), Object.assign(AP('Asphalt_9:_Legends','אספלט 9','game'), {itq:'Asphalt Legends'}), AP('Street_Fighter','סטריט פייטר','game'),
+AP('Space_Invaders','ספייס אינביידרס','game'), Object.assign(AP('My_Talking_Tom','טוקינג טום','game'), {itq:'My Talking Tom'}), Object.assign(AP('Hearthstone','הארתסטון','game'), {itq:'Hearthstone'}), Object.assign(AP('Plague_Inc.','פלייג אינק','game'), {itq:'Plague Inc.'}), // אפליקציות — השלמות
 AP('Google_Photos','גוגל תמונות','app','photos.google.com'), AP('Google_Meet','גוגל מיט','app','meet.google.com'),
 AP('Strava','סטראבה','app','strava.com'), AP('Tripadvisor','טריפאדוויזור','app','tripadvisor.com'),
 AP('Kahoot!','קאהוט','app','kahoot.com'), AP('Quizlet','קוויזלט','app','quizlet.com'),
-AP('Photomath','פוטומאת׳','app','photomath.com'), AP('Google_Classroom','גוגל קלאסרום','app','classroom.google.com'),
-// תוכנות — השלמות
-AP('Scratch_(programming_language)','סקראץ׳','soft'), AP('Blender_(software)','בלנדר','soft'),
-AP('Unity_(game_engine)','יוניטי','soft'), AP('OBS_Studio','OBS','soft'),
+AP('Photomath','פוטומאת׳','app','photomath.com'), // תוכנות — השלמות
+AP('Scratch_(programming_language)','סקראץ׳','soft','scratch.mit.edu'), AP('Steam_(service)','סטים','soft','store.steampowered.com'), AP('Epic_Games','אפיק גיימס','soft','epicgames.com'),
+AP('Notepad++','נוטפאד++','soft'), AP('7-Zip','7-זיפ','soft'),
+AP('WinRAR','ווינראר','soft','win-rar.com'), AP('TeamViewer','טים-ויואר','soft','teamviewer.com'),
+AP('Adobe_Premiere_Pro','פרמייר פרו','soft'), AP('Midjourney','מידג׳רני','soft','midjourney.com'),
+AP('Wix.com','וויקס','soft','wix.com'), AP('Monday.com','מאנדיי','soft','monday.com'),
+AP('Vercel','ורסל','soft','vercel.com'), AP('Node.js','נוד ג׳יי-אס','soft','nodejs.org'),
+// אפליקציות מהעבר 👴
+AP('Winamp','ווינאמפ','ret',null,cfURL('Winamp-logo.svg')), AP('ICQ','ICQ','ret','icq.com'),
+AP('Napster','נאפסטר','ret','napster.com'), AP('Kazaa','קאזה','ret',null,cfURL('KaZaa_logo.svg')), AP('EMule','אימיול','ret','emule-project.net'), AP('MIRC','mIRC (צ׳אט IRC)','ret','mirc.com'),
+AP('MSN','MSN (הפרפר)','ret','msn.com'), AP('LimeWire','ליימוויר','ret','limewire.com'),
+AP('UTorrent','יוטורנט','ret','utorrent.com'), AP('BitTorrent','ביטורנט','ret','bittorrent.com'),
+AP('RealPlayer','ריל-פלייר','ret','real.com'), AP('Internet_Explorer','אינטרנט אקספלורר','ret',null,cfURL('Internet_Explorer_10+11_logo.svg')), AP('Netscape','נטסקייפ','ret',null,cfURL('Netscape_icon.svg')), AP('Myspace','מייספייס','ret','myspace.com'),
+AP('Nero_Burning_ROM','נרו (צורב הדיסקים)','ret','nero.com'), AP('Adobe_Flash','פלאש','ret'),
+AP('Blender_(software)','בלנדר','soft','blender.org'), AP('Unity_(game_engine)','יוניטי','soft'), AP('OBS_Studio','OBS','soft'),
 ];
 
 const QUIZZES = {
@@ -1836,7 +1846,7 @@ async function prepareItems(key){
   const sample = shuffle(quiz.items).slice(0, N_QUESTIONS + 5); // כמה רזרביים
   if(quiz.items[0]?.wiki){
     await Promise.all(sample.map(async it=>{
-      const url = it.dom ? favURL(it.dom) : await fetchPlaceImage(it.wiki);
+      const url = it.itid ? await itunesArt(it.itid) : (it.itq ? await itSearch(it.itq) : (it.icon ? it.icon : (it.dom ? favURL(it.dom) : await fetchPlaceImage(it.wiki))));
       it.photo = (url && await preloadImage(url)) ? url : null; // וידוא שהתמונה באמת נטענת
     }));
     const withPhoto = sample.filter(it=>it.photo);
