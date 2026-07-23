@@ -1937,13 +1937,31 @@ async function prepareItems(key){
   }
   const sample = shuffle(quiz.items).slice(0, N_QUESTIONS + 5); // כמה רזרביים
   if(quiz.items[0]?.wiki){
-    await Promise.all(sample.map(async it=>{
-      const url = it.itid ? await itunesArt(it.itid) : (it.itq ? await itSearch(it.itq) : (it.icon ? it.icon : (it.dom ? favURL(it.dom) : await fetchPlaceImage(it.wiki))));
+    /* עקרון הזהב: הסיבוב לעולם לא ממתין ל-API של אפל.
+       פריטי App Store נכנסים לסיבוב רק אם האייקון שלהם כבר במטמון;
+       השאר נפתרים ברקע (בקצב מנומס) וזמינים מהסיבוב הבא. */
+    const pool = shuffle([...quiz.items]);
+    const candidates = [], bg = [];
+    for(const it of pool){
+      if(it.itid || it.itq){
+        const cached = _itStore[it.itid ? 'id'+it.itid : 'q'+it.itq];
+        if(cached) candidates.push([it, cached]);
+        else if(bg.length < 8) bg.push(it);
+      } else {
+        candidates.push([it, null]);
+      }
+      if(candidates.length >= N_QUESTIONS + 10) break;
+    }
+    // מילוי המטמון ברקע — בלי await, בלי לעכב אף אחד
+    bg.forEach(it => (it.itid ? itunesArt(it.itid) : itSearch(it.itq)).catch(()=>{}));
+    await Promise.all(candidates.map(async ([it, cached])=>{
+      const url = cached ? cached : (it.icon ? it.icon : (it.dom ? favURL(it.dom) : await fetchPlaceImage(it.wiki)));
       it.photo = (url && await preloadImage(url)) ? url : null; // וידוא שהתמונה באמת נטענת
     }));
-    const withPhoto = sample.filter(it=>it.photo);
-    const rest = sample.filter(it=>!it.photo);
-    // במקומות מפורסמים יש אימוג'י כגיבוי; בקבוצות ספורט חובה לוגו
+    const picked = candidates.map(c=>c[0]);
+    const withPhoto = picked.filter(it=>it.photo);
+    const rest = picked.filter(it=>!it.photo);
+    // במקומות מפורסמים יש אימוג'י כגיבוי; בשאר חובה תמונה
     const usable = (key === 'places') ? [...withPhoto, ...rest] : withPhoto;
     return (usable.length ? usable : withPhoto.concat(rest)).slice(0, N_QUESTIONS);
   }
